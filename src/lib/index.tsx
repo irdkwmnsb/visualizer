@@ -1,4 +1,4 @@
-import { bubbleSort } from "../visualisers/bubble-sort/bubble-sort";
+import { bubbleSort } from "../visualizers/bubble-sort/bubble-sort";
 import { RuntimeStore } from "./store"
 
 export const globalStore = new RuntimeStore(bubbleSort);
