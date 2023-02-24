@@ -14,6 +14,7 @@ export const bubbleSort = async (array: number[]) => {
             }
         }
     }
+    await here("done");
 }
 
 export type BubbleSortState = {

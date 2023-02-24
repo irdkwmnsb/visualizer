@@ -12,7 +12,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <App/>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )
