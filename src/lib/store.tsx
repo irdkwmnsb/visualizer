@@ -1,3 +1,4 @@
+import _ from "lodash";
 
 type StoredEvent = {
     name: string;
@@ -12,7 +13,7 @@ type Snapshot = {
     events?: StoredEvent[];
     bindedObjects?: Record<string, any>;
     next: () => void;
-    start: (...args: any[]) => void;
+    start: (args: any[], noStop: boolean) => void;
 }
 
 export class RuntimeStore {
@@ -22,6 +23,7 @@ export class RuntimeStore {
     subscribers: (() => void)[] = [];
     algorithm?: (...args) => Promise<void>;
     currentStep = 0;
+    noStop = false;
 
     constructor(algorithm: (...args: any[]) => Promise<void>) {
         this.algorithm = algorithm;
@@ -35,9 +37,12 @@ export class RuntimeStore {
         this.currentStep++;
         this.events.push({
             name,
-            state: { ...this.bindedObjects },
+            state: _.cloneDeep(this.bindedObjects),
             args
         });
+        if (this.noStop) {
+            return Promise.resolve();
+        }
         this.notifyReact();
         return new Promise((resolve) => {
             this.continuation = resolve;
@@ -79,12 +84,16 @@ export class RuntimeStore {
         return this._dataSnapshot;
     }
 
-    start = (...args: any[]) => {
+    start = (args: any[], noStop: boolean) => {
         this.events = [];
         this.continuation = undefined;
         this.currentStep = 0;
         this.bindedObjects = {};
-        this.algorithm(...args);
+        this.noStop = noStop;
+        this.notifyReact();
+        this.algorithm(...args).then(() => {
+            this.notifyReact()
+        });
     }
 
     subscribe = (callback: () => void) => {
