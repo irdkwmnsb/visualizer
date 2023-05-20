@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "React";
+import { useSyncExternalStore } from "react";
 import { globalStore } from ".";
 
 export const useVisualizer = () => {
