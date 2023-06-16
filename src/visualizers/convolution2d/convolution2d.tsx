@@ -1,4 +1,4 @@
-import { bind, here } from "../../lib";
+import { bind, here } from "./";
 import { Matrix, PaddingType, PaddedMatrix, emptyMatrix } from "./matrix";
 import { range, sumBy } from "lodash";
 
@@ -63,15 +63,22 @@ export type Convolution2DState = {
 
 export type Convolution2DEvent = Start | Done | AddPaddingEvent | ConvolutionStepEvent;
 
-type Start = { type: "start" } // TODO: move to lib?
-type Done = { type: "done" } // TODO: move to lib?
+// TODO: move Start and Done to lib?
+type Start = {
+    name: "start",
+    args: [],
+}
+type Done = {
+    name: "done",
+    args: [],
+}
 type AddPaddingEvent = {
-    type: "add_padding",
-    padding: number,
+    name: "add_padding",
+    args: [padding: number],
 }
 type ConvolutionStepEvent = {
-    type: "convolution_step",
-    meta: ConvolutionStepMeta,
+    name: "convolution_step",
+    args: [meta: ConvolutionStepMeta],
 }
 
 export type ConvolutionStepMeta = {
