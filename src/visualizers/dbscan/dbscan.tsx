@@ -1,4 +1,4 @@
-import { bind, here } from "../../lib";
+import { bind, here } from "./";
 
 export const dbscan = async (points: number[][], eps: number, min_samples: number) => {
     let labels = new Array(points.length).fill(0);
@@ -12,8 +12,8 @@ export const dbscan = async (points: number[][], eps: number, min_samples: numbe
     let neighbors = findNeighbors(points, eps);
     for (let i = 0; i < points.length; i++) {
         if (await expandCluster(labels, neighbors, i, cluster, min_samples)) {
-            await here("new_cluster", cluster.value);
             cluster.value++;
+            await here("new_cluster", cluster.value);
         }
     }
     await here("done");
@@ -31,13 +31,13 @@ const expandCluster = async (
     }
 
     if (neighbors[i].length < min_samples) {
-        await here("noise", i, -1, neighbors[i].length);
         labels[i] = -1;
+        await here("noise", i, neighbors[i].length);
         return false;
     } 
 
-    await here("expand_cluster", i, cluster.value, neighbors[i].length);
     labels[i] = cluster.value;
+    await here("expand_cluster", i, neighbors[i].length);
     for (let neighbor of neighbors[i]) {
         if (labels[neighbor] === 0) {
             await expandCluster(labels, neighbors, neighbor, cluster, min_samples);
@@ -65,9 +65,7 @@ const distance = (p1: number[], p2: number[]): number =>
 
 // TODO: move to lib?
 class Mutable<T> {
-    constructor(public value: T) { 
-        this.value = value;
-    }
+    constructor(public value: T) {}
 }
 
 export type DBScanState = {
@@ -78,21 +76,26 @@ export type DBScanState = {
 
 export type DBScanEvent = Start | Done | NewCluster | ExpandCluster | Noise;
 
-type Start = { name: "start"; }
-type Done = { name: "done";}
+// TODO: move Start and Done to lib?
+type Start = {
+    name: "start",
+    args: [],
+}
+type Done = {
+    name: "done",
+    args: [],
+}
 type NewCluster = {
     name: "new_cluster";
-    cluster: number;
+    args: [cluster: number];
 }
 type ExpandCluster = {
     name: "expand_cluster";
-    point: number;
-    neighbors_count: number;
+    args: [point: number, neighbors_count: number];
 }
 type Noise = {
     name: "noise";
-    point: number;
-    neighbors_count: number;
+    args: [point: number, neighbors_count: number];
 }
 
 export type DBScanArguments = [number[][], number, number];
