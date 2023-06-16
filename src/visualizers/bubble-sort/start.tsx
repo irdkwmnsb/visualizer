@@ -1,10 +1,10 @@
 import { BubbleSortArguments } from "./bubble-sort"
 
-type Props = {
-    doStart: (args: BubbleSortArguments, noStop: boolean) => void
-}
+// type Props = {
+//     doStart: (args: BubbleSortArguments, noStop: boolean) => void
+// }
 
-export const BubbleSortStarter = ({ doStart}: Props) => {
+export const BubbleSortStarter = ({ doStart }) => {
     return <div>
         <button onClick={() => doStart([[5, 4, 3, 2, 1]], false)}>Start</button>
         <button onClick={() => doStart([[5, 4, 3, 2, 1]], true)}>Run Full</button>

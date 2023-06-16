@@ -1,24 +1,27 @@
 import _ from "lodash";
 
-type StoredEvent = {
-    name: string;
-    state: any;
-    args: any[];
+type BaseEvent = {
+    name: string,
+    args: unknown[]
+};
+
+type StoredEvent<Event extends BaseEvent, State> = Event & {
+    state: State;
 }
 
-type Snapshot = {
-    curState?: any;
-    curEvent?: StoredEvent;
+type Snapshot<State, Event extends BaseEvent, Arguments> = {
+    curState?: State;
+    curEvent?: StoredEvent<Event, State>;
     currentStep?: number;
-    events?: StoredEvent[];
+    events?: StoredEvent<Event, State>[];
     bindedObjects?: Record<string, any>;
     next: () => void;
     start: (args: any[], noStop: boolean) => void;
 }
 
-export class RuntimeStore {
-    events: StoredEvent[] = [];
-    bindedObjects: Record<string, any> = {};
+export class RuntimeStore<State, Event extends BaseEvent, Arguments>  {
+    events: StoredEvent<Event, State>[] = [];
+    bindedObjects: Record<keyof State, State[keyof State]> = {} as Record<keyof State, State[keyof State]>; // TODO: fix this
     continuation?: () => void;
     subscribers: (() => void)[] = [];
     algorithm?: (...args) => Promise<void>;
@@ -29,17 +32,19 @@ export class RuntimeStore {
         this.algorithm = algorithm;
     }
 
-    bind = (name: string, value: any) => {
+    bind = (name: keyof State, value: State[keyof State]) => {
+        console.log("Binded", name);
         this.bindedObjects[name] = value;
     }
 
-    here = async (name: string, ...args: any[]): Promise<void> => {
+    here = async (name: Event["name"], ...args: Event["args"]): Promise<void> => {
+        console.log("!!", this.bindedObjects);
         this.currentStep++;
         this.events.push({
             name,
-            state: _.cloneDeep(this.bindedObjects),
-            args
-        });
+            args,
+            state: _.cloneDeep(this.bindedObjects) as State,
+        } as StoredEvent<Event, State>);
         if (this.noStop) {
             return Promise.resolve();
         }
@@ -88,7 +93,7 @@ export class RuntimeStore {
         this.events = [];
         this.continuation = undefined;
         this.currentStep = 0;
-        this.bindedObjects = {};
+        this.bindedObjects = {} as Record<keyof State, State[keyof State]>; // TODO: fix this
         this.noStop = noStop;
         this.notifyReact();
         this.algorithm(...args).then(() => {
@@ -103,7 +108,7 @@ export class RuntimeStore {
         };
     }
 
-    _dataSnapshot: Snapshot = {
+    _dataSnapshot: Snapshot<State, Event, Arguments> = {
         start: this.start,
         next: this.next,
     };

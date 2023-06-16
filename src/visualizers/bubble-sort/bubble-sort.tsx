@@ -1,4 +1,4 @@
-import { bind, here } from "../../lib";
+import { bind, here } from "./";
 
 export const bubbleSort = async (array: number[]) => {
     bind("array", array);
@@ -22,8 +22,11 @@ export type BubbleSortState = {
 }
 
 export type BubbleSortEvent = {
-    name: "compare" | "swap";
-    args: [number, number];
+    name: "swap" | "compare",
+    args: [number, number]
+} | {
+    name: "done",
+    args: []
 }
 
 export type BubbleSortArguments = [number[]];

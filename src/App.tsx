@@ -1,5 +1,4 @@
 import { BubbleSortStarter } from "./visualizers/bubble-sort/start";
-import { globalStore } from "./lib";
 import { BubbleSortRender } from "./visualizers/bubble-sort/render";
 import { useVisualizer } from "./lib/hooks";
 import { useEffect, useState } from "react";
