@@ -1,3 +1,4 @@
+import { ParameterComponent, Num, Arr } from "../../lib/params"
 import { BubbleSortArguments } from "./bubble-sort"
 
 // type Props = {
@@ -5,8 +6,19 @@ import { BubbleSortArguments } from "./bubble-sort"
 // }
 
 export const BubbleSortStarter = ({ doStart }) => {
+    
+    const propArr = {
+        label: "массив",
+        value: new Arr<number, Num>(new Num())
+    }
+
+    const components = [<ParameterComponent<number[]> {...propArr} />].map((v, idx) => <li>{v}</li>);
+
     return <div>
-        <button onClick={() => doStart([[5, 4, 3, 2, 1]], false)}>Start</button>
+        <ul>
+            {components}
+        </ul>
+        <button onClick={() => doStart([propArr.value.value], false)}>Start</button>
         <button onClick={() => doStart([[5, 4, 3, 2, 1]], true)}>Run Full</button>
     </div>;
 }
