@@ -12,13 +12,11 @@ export const BubbleSortStarter = ({ doStart }) => {
         value: new Arr<number, Num>(new Num())
     }
 
-    const components = [<ParameterComponent<number[]> {...propArr} />].map((v, idx) => <li>{v}</li>);
+    const components = [<ParameterComponent<number[]> {...propArr} />].map((v) => <li>{v}</li>);
 
     return <div>
-        <ul>
-            {components}
-        </ul>
+        <ul>{components}</ul>
         <button onClick={() => doStart([propArr.value.value], false)}>Start</button>
-        <button onClick={() => doStart([[5, 4, 3, 2, 1]], true)}>Run Full</button>
+        <button onClick={() => doStart([propArr.value.value], true)}>Run Full</button>
     </div>;
 }
