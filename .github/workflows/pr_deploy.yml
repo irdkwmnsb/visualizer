@@ -8,10 +8,7 @@ on:
       - synchronize
       - closed
 
-permissions:
-  contents: write
-  deployments: write
-  pages: write
+permissions: write-all
 
 jobs:
   cache-and-install:
