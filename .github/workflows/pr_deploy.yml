@@ -8,6 +8,11 @@ on:
       - synchronize
       - closed
 
+permissions:
+  contents: write
+  deployments: write
+  pages: write
+
 jobs:
   cache-and-install:
     runs-on: ubuntu-latest
