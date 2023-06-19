@@ -8,8 +8,8 @@ export interface Matrix {
     get: (row: number, column: number) => number;
 }
 
-export const enum PaddingType {
-    Reflect, Wrap, Edge, Zero 
+export enum PaddingType {
+    Reflect="reflect", Wrap="wrap", Edge="edge", Zero="zero"
 }
 
 export class ArrayMatrix implements Matrix {
@@ -75,6 +75,8 @@ const recalculateIndex = (
             return edgeIndex(correctedIndex, length);
         case PaddingType.Zero:
             return 0;
+        default:
+            throw Error("Unknown type: " + paddingType)
     }
 }
 
