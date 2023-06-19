@@ -26,7 +26,7 @@ export const Convolution2DStarter = ({ doStart }: Props) => {
         3,
         selectedType,
     ]
-    console.log(args[4]);
+    // console.log(args[4]);
     return <div>
         <select 
             value={selectedType}
