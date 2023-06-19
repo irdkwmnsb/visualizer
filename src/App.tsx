@@ -1,5 +1,5 @@
-import { BubbleSortStarter } from "./visualizers/bubble-sort/start";
-import { BubbleSortRender } from "./visualizers/bubble-sort/render";
+import { Convolution2DStarter } from "./visualizers/convolution2d/start";
+import { Convolution2DRender } from "./visualizers/convolution2d/render";
 import { useVisualizer } from "./lib/hooks";
 import { useEffect, useState } from "react";
 
@@ -48,8 +48,8 @@ const App = () => {
     <button onClick={() => setEventOverride(0)}>Beginning</button>
     <button onClick={() => setEventOverride(events.length - 1)}>End</button>
     <small>Use arrow keys to navigate</small>
-    <BubbleSortStarter doStart={start}/>
-    <BubbleSortRender curState={curStateOverride} curEvent={curEventOverride}/>
+    <Convolution2DStarter doStart={start}/>
+    <Convolution2DRender curState={curStateOverride} curEvent={curEventOverride}/>
     <div>
       {events && events.map((x, i) => {
         return <div key={i}>
