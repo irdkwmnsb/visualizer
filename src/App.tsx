@@ -1,5 +1,5 @@
-import { BubbleSortStarter } from "./visualizers/bubble-sort/start";
-import { BubbleSortRender } from "./visualizers/bubble-sort/render";
+import { DBScanStarter } from "./visualizers/dbscan/start";
+import { DBScanRender } from "./visualizers/dbscan/render";
 import { useVisualizer } from "./lib/hooks";
 import { useEffect, useState } from "react";
 
@@ -48,8 +48,8 @@ const App = () => {
     <button onClick={() => setEventOverride(0)}>Beginning</button>
     <button onClick={() => setEventOverride(events.length - 1)}>End</button>
     <small>Use arrow keys to navigate</small>
-    <BubbleSortStarter doStart={start}/>
-    <BubbleSortRender curState={curStateOverride} curEvent={curEventOverride}/>
+    <DBScanStarter doStart={start}/>
+    <DBScanRender curState={curStateOverride} curEvent={curEventOverride}/>
     <div>
       {events && events.map((x, i) => {
         return <div key={i}>
