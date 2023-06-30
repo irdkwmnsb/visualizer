@@ -1,5 +1,5 @@
-import { RenderProps } from "../../lib/manifest";
-import { BubbleSortEvent, BubbleSortState } from "./bubble-sort";
+import { RenderProps } from "../../lib/manifest"
+import { BubbleSortEvent, BubbleSortState } from "./bubble-sort"
 
 // export type RenderProps = {
 //     curState: BubbleSortState;
@@ -23,8 +23,8 @@ const getColor = (event: BubbleSortEvent, index: number) => {
 }
 
 export const BubbleSortRender = ({ curState, curEvent }: RenderProps<BubbleSortState, BubbleSortEvent>) => {
-    console.log("Rendering", curState, curEvent);
-    const comparing = curEvent?.args;
+    console.log("Rendering", curState, curEvent)
+    const comparing = curEvent?.args
     return <div>
         Renderer:
         <div>
@@ -37,5 +37,5 @@ export const BubbleSortRender = ({ curState, curEvent }: RenderProps<BubbleSortS
             })}
         </div>
         {JSON.stringify(comparing)}
-    </div>;
+    </div>
 }

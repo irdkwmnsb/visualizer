@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from "lodash"
 
 type BaseEvent = {
     name: string,
@@ -14,63 +14,63 @@ type Snapshot<State, Event extends BaseEvent, Arguments> = {
     curEvent?: StoredEvent<Event, State>;
     currentStep?: number;
     events?: StoredEvent<Event, State>[];
-    bindedObjects?: Record<string, any>;
+    bindedObjects?: Record<string, unknown>;
     next: () => void;
-    start: (args: any[], noStop: boolean) => void;
+    start: (args: Arguments, noStop: boolean) => void;
 }
 
-export class RuntimeStore<State, Event extends BaseEvent, Arguments>  {
-    events: StoredEvent<Event, State>[] = [];
-    bindedObjects: Record<keyof State, State[keyof State]> = {} as Record<keyof State, State[keyof State]>; // TODO: fix this
-    continuation?: () => void;
-    subscribers: (() => void)[] = [];
-    algorithm?: (...args) => Promise<void>;
-    currentStep = 0;
-    noStop = false;
+export class RuntimeStore<State, Event extends BaseEvent, Arguments extends unknown[]>  {
+    events: StoredEvent<Event, State>[] = []
+    bindedObjects: Record<keyof State, State[keyof State]> = {} as Record<keyof State, State[keyof State]> // TODO: fix this
+    continuation?: () => void
+    subscribers: (() => void)[] = []
+    algorithm?: (...args) => Promise<void>
+    currentStep = 0
+    noStop = false
 
-    constructor(algorithm: (...args: any[]) => Promise<void>) {
-        this.algorithm = algorithm;
+    constructor(algorithm: (...args: Arguments) => Promise<void>) {
+        this.algorithm = algorithm
     }
 
     bind = (name: keyof State, value: State[keyof State]) => {
-        console.log("Binded", name);
-        this.bindedObjects[name] = value;
+        console.log("Binded", name)
+        this.bindedObjects[name] = value
     }
 
     here = async (name: Event["name"], ...args: Event["args"]): Promise<void> => {
-        console.log("!!", this.bindedObjects);
-        this.currentStep++;
+        console.log("!!", this.bindedObjects)
+        this.currentStep++
         this.events.push({
             name,
             args,
             state: _.cloneDeep(this.bindedObjects) as State,
-        } as StoredEvent<Event, State>);
+        } as StoredEvent<Event, State>)
         if (this.noStop) {
-            return Promise.resolve();
+            return Promise.resolve()
         }
-        this.notifyReact();
+        this.notifyReact()
         return new Promise((resolve) => {
-            this.continuation = resolve;
-        });
+            this.continuation = resolve
+        })
     }
 
     next = () => {
         if (this.continuation) {
-            this.continuation();
+            this.continuation()
         }
     }
 
     get curState () {
-        return this.events[this.currentStep - 1]?.state;
+        return this.events[this.currentStep - 1]?.state
     }
 
     get curEvent() {
-        return this.events[this.currentStep - 1];
+        return this.events[this.currentStep - 1]
     }
 
     notifyReact = () => {
-        this.updateSnapshot();
-        this.subscribers.forEach((x) => x());
+        this.updateSnapshot()
+        this.subscribers.forEach((x) => x())
     }
 
     updateSnapshot = () => {
@@ -86,30 +86,30 @@ export class RuntimeStore<State, Event extends BaseEvent, Arguments>  {
     }
 
     getCurSnapshot = () => {
-        return this._dataSnapshot;
+        return this._dataSnapshot
     }
 
-    start = (args: any[], noStop: boolean) => {
-        this.events = [];
-        this.continuation = undefined;
-        this.currentStep = 0;
-        this.bindedObjects = {} as Record<keyof State, State[keyof State]>; // TODO: fix this
-        this.noStop = noStop;
-        this.notifyReact();
+    start = (args: Arguments, noStop: boolean) => {
+        this.events = []
+        this.continuation = undefined
+        this.currentStep = 0
+        this.bindedObjects = {} as Record<keyof State, State[keyof State]> // TODO: fix this
+        this.noStop = noStop
+        this.notifyReact()
         this.algorithm(...args).then(() => {
             this.notifyReact()
-        });
+        })
     }
 
     subscribe = (callback: () => void) => {
-        this.subscribers.push(callback);
+        this.subscribers.push(callback)
         return () => {
-            this.subscribers = this.subscribers.filter((x) => x !== callback);
-        };
+            this.subscribers = this.subscribers.filter((x) => x !== callback)
+        }
     }
 
     _dataSnapshot: Snapshot<State, Event, Arguments> = {
         start: this.start,
         next: this.next,
-    };
+    }
 }

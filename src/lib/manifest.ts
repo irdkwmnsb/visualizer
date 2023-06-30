@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC } from "react"
 
 export type StartProps<Arguments> = {
     doStart: (args: Arguments, noStop: boolean) => void
