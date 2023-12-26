@@ -8,7 +8,7 @@
     "serve": "vite preview",
     "lint": "eslint --fix ."
   },
-  "license": "MIT",
+  "license": "GPL-3.0+",
   "devDependencies": {
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
