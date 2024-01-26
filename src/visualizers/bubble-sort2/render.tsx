@@ -7,9 +7,9 @@ import { BubbleSortEvent, BubbleSortState } from "./bubble-sort"
 // }
 
 const COLORS = {
-    "compare": "red",
-    "swap": "green",
-    "done": "cyan"
+    "compare": "black",
+    "swap": "black",
+    "done": "black"
 }
 
 const getColor = (event: BubbleSortEvent, index: number) => {
@@ -26,7 +26,7 @@ export const BubbleSortRender = ({ curState, curEvent }: RenderProps<BubbleSortS
     console.log("Rendering", curState, curEvent)
     const comparing = curEvent?.args
     return <div>
-        Renderer:
+        Bubble sort 2
         <div>
             {curState && curState.array.map((value, index) => {
                 return <div key={value + "!" + index} style={{

@@ -1,8 +1,7 @@
 /* @refresh reload */
 import ReactDOM from "react-dom/client"
-import App from "./App"
-import { store, manifest } from "./visualizers/bubble-sort2"
-import React from "react"
+import App from "/src/App"
+import { manifest, store } from "/src/visualizers/%%visName%%/index.tsx"
 
 const root = document.getElementById("root")
 
@@ -13,7 +12,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <React.StrictMode>
-        <App store={store} manifest={manifest}/>
-    </React.StrictMode>,
+    // <React.StrictMode>
+    <App manifest={manifest} store={store}/>
+    // </React.StrictMode>,
 )

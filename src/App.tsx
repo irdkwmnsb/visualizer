@@ -1,15 +1,23 @@
-import { BubbleSortStarter } from "./visualizers/bubble-sort/start"
-import { BubbleSortRender } from "./visualizers/bubble-sort/render"
-import { globalStore } from "./visualizers/bubble-sort"
+/* @refresh reload */
+// import { globalStore } from "./visualizers/bubble-sort"
 import { useEffect, useState } from "react"
 import { useSyncExternalStore } from "react"
+// import { IAlgorithmManifest } from "./lib/manifest"
+import { RuntimeStore } from "./lib/store"
+import { IAlgorithmManifest } from "./lib/manifest"
 
-export const useVisualizer = () => {
-    return useSyncExternalStore(globalStore.subscribe, globalStore.getCurSnapshot)
+export const useVisualizer = (store: RuntimeStore) => {
+    return useSyncExternalStore(store.subscribe, store.getCurSnapshot)
 }
 
-const App = () => {
-    const {curState, curEvent, events, currentStep, start, next} = useVisualizer()
+type AppProps = {
+    manifest: IAlgorithmManifest,
+    store: RuntimeStore
+}
+
+const App = ({ manifest, store }: AppProps) => {
+    const vis = useVisualizer(store)
+    const {curState, curEvent, events, currentStep, start, next} = vis
     const [eventOverride, setEventOverride] = useState<number | undefined>(undefined)
     const curEventOverride = eventOverride !== undefined ? events[eventOverride] : curEvent
     const curStateOverride = eventOverride !== undefined ? events[eventOverride].state : curState
@@ -53,8 +61,8 @@ const App = () => {
         <button onClick={() => setEventOverride(0)}>Beginning</button>
         <button onClick={() => setEventOverride(events.length - 1)}>End</button>
         <small>Use arrow keys to navigate</small>
-        <BubbleSortStarter doStart={start}/>
-        <BubbleSortRender curState={curStateOverride} curEvent={curEventOverride}/>
+        <manifest.startComponent doStart={start}/>
+        <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>
         <div>
             {events && events.map((x, i) => {
                 return <div key={i}>

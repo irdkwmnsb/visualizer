@@ -1,27 +1,31 @@
 import _ from "lodash"
+import { IEvent, IState, IArguments } from "./manifest"
 
-type BaseEvent = {
-    name: string,
-    args: unknown[]
+type StoredEvent<Event extends IEvent, State extends IState> = Event & {
+  state: State;
 };
 
-type StoredEvent<Event extends BaseEvent, State> = Event & {
-    state: State;
-}
+type Snapshot<
+  State extends IState,
+  Event extends IEvent,
+  Arguments extends IArguments,
+> = {
+  curState?: State;
+  curEvent?: StoredEvent<Event, State>;
+  currentStep?: number;
+  events?: StoredEvent<Event, State>[];
+  bindedObjects?: State;
+  next: () => void;
+  start: (args: Arguments, noStop: boolean) => void;
+};
 
-type Snapshot<State, Event extends BaseEvent, Arguments> = {
-    curState?: State;
-    curEvent?: StoredEvent<Event, State>;
-    currentStep?: number;
-    events?: StoredEvent<Event, State>[];
-    bindedObjects?: Record<string, unknown>;
-    next: () => void;
-    start: (args: Arguments, noStop: boolean) => void;
-}
-
-export class RuntimeStore<State, Event extends BaseEvent, Arguments extends unknown[]>  {
+export class RuntimeStore<
+  State extends IState = IState,
+  Event extends IEvent = IEvent,
+  Arguments extends IArguments = IArguments,
+> {
     events: StoredEvent<Event, State>[] = []
-    bindedObjects: Record<keyof State, State[keyof State]> = {} as Record<keyof State, State[keyof State]> // TODO: fix this
+    state: State = {} as State
     continuation?: () => void
     subscribers: (() => void)[] = []
     algorithm?: (...args) => Promise<void>
@@ -33,17 +37,25 @@ export class RuntimeStore<State, Event extends BaseEvent, Arguments extends unkn
     }
 
     bind = (name: keyof State, value: State[keyof State]) => {
-        console.log("Binded", name)
-        this.bindedObjects[name] = value
+        if (!(value instanceof Object)) {
+            console.warn(
+                `${String(
+                    name
+                )} is not an object, so it won't be binded and watched for changes. ` +
+          "If you need to use it in the renderer, you should probably pass it in \"here\""
+            )
+            // TODO: redux uses some fancy pretty library that is able to detect changes on primitives. (does it?)
+        }
+        this.state[name] = value
     }
 
     here = async (name: Event["name"], ...args: Event["args"]): Promise<void> => {
-        console.log("!!", this.bindedObjects)
+        console.log("!!", this.state)
         this.currentStep++
         this.events.push({
             name,
             args,
-            state: _.cloneDeep(this.bindedObjects) as State,
+            state: _.cloneDeep(this.state) as State,
         } as StoredEvent<Event, State>)
         if (this.noStop) {
             return Promise.resolve()
@@ -60,7 +72,7 @@ export class RuntimeStore<State, Event extends BaseEvent, Arguments extends unkn
         }
     }
 
-    get curState () {
+    get curState() {
         return this.events[this.currentStep - 1]?.state
     }
 
@@ -79,13 +91,13 @@ export class RuntimeStore<State, Event extends BaseEvent, Arguments extends unkn
             curEvent: this.curEvent,
             currentStep: this.currentStep,
             events: this.events,
-            bindedObjects: this.bindedObjects,
+            bindedObjects: this.state,
             next: this.next,
             start: this.start,
         }
     }
 
-    getCurSnapshot = () => {
+    getCurSnapshot = (): Snapshot<State, Event, Arguments> => {
         return this._dataSnapshot
     }
 
@@ -93,7 +105,7 @@ export class RuntimeStore<State, Event extends BaseEvent, Arguments extends unkn
         this.events = []
         this.continuation = undefined
         this.currentStep = 0
-        this.bindedObjects = {} as Record<keyof State, State[keyof State]> // TODO: fix this
+        this.state = {} as State
         this.noStop = noStop
         this.notifyReact()
         this.algorithm(...args).then(() => {
