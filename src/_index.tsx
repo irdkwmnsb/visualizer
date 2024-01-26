@@ -1,7 +1,7 @@
 /* @refresh reload */
 import ReactDOM from "react-dom/client"
 import App from "./App"
-import { store, manifest } from "./visualizers/bubble-sort2"
+import { store, manifest } from "./visualizers/bubble-sort"
 import React from "react"
 
 const root = document.getElementById("root")

@@ -1,7 +1,7 @@
 /* @refresh reload */
 import ReactDOM from "react-dom/client"
 import App from "/src/App"
-import { manifest, store } from "/src/visualizers/%%visName%%/index.tsx"
+import { store, manifest } from "/src/visualizers/%%visName%%"
 
 const root = document.getElementById("root")
 

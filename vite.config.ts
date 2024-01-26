@@ -1,13 +1,13 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 // import { viteSingleFile } from "vite-plugin-singlefile"
-// import Inspect from "vite-plugin-inspect"
+import Inspect from "vite-plugin-inspect"
 import { visualizerCodegen } from "./plugin/index"
 // import { resolve } from "path"
 
 export default defineConfig({
     plugins: [
-        // Inspect(),
+        Inspect(),
         visualizerCodegen(), 
         react(), 
         // viteSingleFile()
