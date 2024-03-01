@@ -44,7 +44,7 @@ export class RuntimeStore<
                 )} is not an object, so it won't be binded and watched for changes. ` +
           "If you need to use it in the renderer, you should probably pass it in \"here\""
             )
-            // TODO: redux uses some fancy pretty library that is able to detect changes on primitives. (does it?)
+            
         }
         this.state[name] = value
     }
@@ -55,7 +55,9 @@ export class RuntimeStore<
         this.events.push({
             name,
             args,
-            state: _.cloneDeep(this.state) as State,
+            // TODO: use Immer if this becomes too heavy. 
+            // Immer allows to watch for modifications of deep nested objects.
+            state: _.cloneDeep(this.state) as State, 
         } as StoredEvent<Event, State>)
         if (this.noStop) {
             return Promise.resolve()

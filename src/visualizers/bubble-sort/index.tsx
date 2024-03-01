@@ -1,4 +1,4 @@
-import { IAlgorithmManifest, initAlgo } from "../../lib/manifest"
+import { IAlgorithmManifest, initAlgo } from "../../core/manifest"
 import { BubbleSortArguments, BubbleSortEvent, BubbleSortState, bubbleSort } from "./bubble-sort"
 import { BubbleSortRender } from "./render"
 import { BubbleSortStarter } from "./start"

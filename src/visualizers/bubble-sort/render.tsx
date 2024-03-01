@@ -1,4 +1,6 @@
-import { RenderProps } from "../../lib/manifest"
+import { VisArray } from "../../components/array"
+import { RenderProps } from "../../core/manifest"
+import { Color } from "../../visuals/colors"
 import { BubbleSortEvent, BubbleSortState } from "./bubble-sort"
 
 // export type RenderProps = {
@@ -7,19 +9,8 @@ import { BubbleSortEvent, BubbleSortState } from "./bubble-sort"
 // }
 
 const COLORS = {
-    "compare": "cyan",
-    "swap": "red",
-    "done": "green"
-}
-
-const getColor = (event: BubbleSortEvent, index: number) => {
-    if (event.name === "done") {
-        return COLORS["done"]
-    } else {
-        if(event.args.includes(index)) {
-            return COLORS[event.name]
-        }
-    }
+    "compare": Color.BLUE,
+    "swap": Color.RED,
 }
 
 export const BubbleSortRender = ({ curState, curEvent }: RenderProps<BubbleSortState, BubbleSortEvent>) => {
@@ -28,13 +19,19 @@ export const BubbleSortRender = ({ curState, curEvent }: RenderProps<BubbleSortS
     return <div>
         Renderer:
         <div>
-            {curState && curState.array.map((value, index) => {
-                return <div key={value + "!" + index} style={{
-                    backgroundColor: getColor(curEvent, index)
-                }}>
-                    {value}
-                </div>
-            })}
+            {curState && <VisArray 
+                array={curState.array}
+                highlights={{
+                    [curEvent.args[0]]: COLORS[curEvent.name],
+                    [curEvent.args[1]]: COLORS[curEvent.name]
+                }}
+                pointers={{
+                    
+                }}
+                color={
+                    curEvent.name === "done" && Color.GREEN
+                }
+            />}
         </div>
         {JSON.stringify(comparing)}
     </div>

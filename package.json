@@ -23,12 +23,14 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "prettier": "^3.1.1",
+    "sass": "^1.71.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
     "vite-plugin-inspect": "^0.8.1",
     "vite-plugin-singlefile": "^0.13.5"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

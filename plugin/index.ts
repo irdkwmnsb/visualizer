@@ -25,11 +25,12 @@ export const visualizerCodegen = async (): Promise<Plugin> => {
         }
         return visualizers.indexOf(match[1]) !== -1
     }
-    const visEntryRegexp = /^\/?([a-z-0-9]+).html$/
+    const visEntryRegexp = /^\/?([a-z-0-9]+)(?:.html)?$/
     const isVisEntry = matchVizByRegexp(visEntryRegexp)
     const visIndexRegexp = /^\/([a-z-0-9]+).tsx$/
     const isVisIndex = matchVizByRegexp(visIndexRegexp)
     // const visualizersIndexes = visualizers.map(f => `./src/${f}.tsx`)
+    console.log(`Loaded ${visualizers.length} visualizers: ${visualizers}`)
     
     return {
         name: "visualizer-codegen",

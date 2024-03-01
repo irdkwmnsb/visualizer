@@ -1,0 +1,15 @@
+.arrayBox {
+    display: flex;
+    .column {
+        flex-direction: column;
+    }
+    .row {
+        flex-direction: row;
+    }
+}
+
+.arrayElement {
+    border: 1px gray solid;
+    padding: 5px;
+    box-sizing: border-box;
+}

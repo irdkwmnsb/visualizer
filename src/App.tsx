@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import { useSyncExternalStore } from "react"
 // import { IAlgorithmManifest } from "./lib/manifest"
-import { RuntimeStore } from "./lib/store"
-import { IAlgorithmManifest } from "./lib/manifest"
+import { RuntimeStore } from "./core/store"
+import { IAlgorithmManifest } from "./core/manifest"
 
 export const useVisualizer = (store: RuntimeStore) => {
     return useSyncExternalStore(store.subscribe, store.getCurSnapshot)
@@ -37,12 +37,13 @@ const App = ({ manifest, store }: AppProps) => {
         }
     }
     useEffect(() => {
-    // key listeners
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === "ArrowRight") {
+                e.preventDefault()
                 doNext()
             }
             if (e.key === "ArrowLeft") {
+                e.preventDefault()
                 doPrev()
             }
         }

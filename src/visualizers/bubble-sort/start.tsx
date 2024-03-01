@@ -1,4 +1,4 @@
-import { StartProps } from "../../lib/manifest"
+import { StartProps } from "../../core/manifest"
 import { BubbleSortArguments } from "./bubble-sort"
 
 export const BubbleSortStarter = ({ doStart }: StartProps<BubbleSortArguments>) => {
