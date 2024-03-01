@@ -44,14 +44,11 @@ export const visualizerCodegen = async (): Promise<Plugin> => {
                         })
                         .end(body)
                 }
-                console.log("html", req.url)
-                // fixme later
                 if(req.url === "/") {
                     const body = visualizersEntries.map((entry) => `<a href="${entry}">${entry}</a>`).join("<br>")
                     sendBody(body)
                 } else if(isVisEntry(req.url)) {
                     const visName = req.url.replace("/", "").replace(".html", "")
-                    console.log("got html request.")
                     const body = await server.transformIndexHtml(req.url, await getIndexHTMLTemplate({ visName }))
                     sendBody(body)
                 } else {
@@ -60,9 +57,6 @@ export const visualizerCodegen = async (): Promise<Plugin> => {
             })
         },
         async options(options) {
-            console.log(visualizers)
-            console.log(visualizersEntries)
-            // console.log(options)
             const newOptions = {
                 ...options,
                 input: visualizersEntries,
@@ -70,36 +64,23 @@ export const visualizerCodegen = async (): Promise<Plugin> => {
                     inlineDynamicImports: false,
                 },
             }
-            console.log(newOptions)
-            // return options
             return newOptions
         },
         resolveId: {
             order: "pre",
             async handler(source) {
-                console.log("resolveId", source)
-                if(
-                    isVisEntry(source) || isVisIndex(source)
-                ) {
-                    console.log(`Resolving ${source}!`)
+                if(isVisEntry(source) || isVisIndex(source)) {
                     return source
                 }
                 return null
             }
         },
         async load(id, options) {
-            console.log("load", id, options)
-            console.log("isVisEntry", isVisEntry(id))
-            console.log("isVisIndex", isVisIndex(id))
             if (isVisEntry(id)) {
-                console.log("here1")
                 const [_, visName] = id.match(visEntryRegexp)
-                console.log("here2")
                 return await getIndexHTMLTemplate({visName})
             } else if(isVisIndex(id)) {
-                console.log("here3")
                 const [_, visName] = id.match(visIndexRegexp)
-                console.log("here4")
                 return await getIndexTSTemplate({visName})
             }
         },
