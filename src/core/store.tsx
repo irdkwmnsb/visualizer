@@ -50,7 +50,7 @@ export class RuntimeStore<
     }
 
     here = async (name: Event["name"], ...args: Event["args"]): Promise<void> => {
-        console.log("!!", this.state)
+        // console.log("!!", this.state)
         this.currentStep++
         this.events.push({
             name,

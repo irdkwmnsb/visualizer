@@ -2,6 +2,10 @@
 import ReactDOM from "react-dom/client"
 import App from "/src/App"
 import { store, manifest } from "/src/visualizers/%%visName%%"
+import { enableMapSet } from "immer"
+
+enableMapSet()
+
 
 const root = document.getElementById("root")
 

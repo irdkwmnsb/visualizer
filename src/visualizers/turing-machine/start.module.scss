@@ -1,0 +1,13 @@
+.tapeContainer {
+    display: flex;
+    gap: 10px;
+    .tapeCell {
+        width: 30px;
+        text-align: center;
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 20px;
+        }
+    }
+}
