@@ -14,3 +14,5 @@ English version is yet to be written.
 * Написать документацию для разработчиков визуализаторов
 * Распространить инструментарий и найти волонтеров для реализации самых популярных алгоритмов
 * Внедрить готовые визуализаторы в процессы учебы
+* utilize captureStackTrace to get line number and show as code.
+* Use reflection api for auto starter and auto render (https://www.typescriptlang.org/docs/handbook/decorators.html#property-decorators)

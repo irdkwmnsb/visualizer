@@ -29,4 +29,4 @@ export type BubbleSortEvent = {
     args: []
 }
 
-export type BubbleSortArguments = [number[]];
+export type BubbleSortArguments = Parameters<typeof bubbleSort>;
