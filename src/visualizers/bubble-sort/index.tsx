@@ -17,4 +17,4 @@ export const manifest: BubbleSortManifest = {
 export const { bind, here, store } = initAlgo<BubbleSortState, BubbleSortEvent, BubbleSortArguments, BubbleSortManifest>(manifest)
 
 // This doesn't compile in bubble-sort.tsx
-// export const { bind, here, store } = initAlgo(manifest);
+// export const { bind, here, store } = initAlgo(manifest)

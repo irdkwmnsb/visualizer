@@ -19,7 +19,7 @@ export type IAlgorithmManifest<
   Event extends IEvent = IEvent,
   Arguments extends IArguments = IArguments,
 > = {
-  algo: (...args: Arguments) => Promise<void>;
+  algo: (...args: Arguments) => Promise<void>; // fixme: Return type should not be Promise<void>
   startComponent: FC<StartProps<Arguments>>;
   renderComponent: FC<RenderProps<State, Event>>;
 };

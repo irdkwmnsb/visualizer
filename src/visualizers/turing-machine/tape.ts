@@ -14,10 +14,17 @@ export class Tape {
     }
 
     set(index: number, value: string) {
-        this._tapeContainer.set(index, value)
+        if (value === "_") {
+            this._tapeContainer.delete(index)
+        } else {
+            this._tapeContainer.set(index, value)
+        }
     }
 
     get(index: number): string {
+        if (!this._tapeContainer.has(index)) {
+            return "_"
+        }
         return this._tapeContainer.get(index)
     }
 }

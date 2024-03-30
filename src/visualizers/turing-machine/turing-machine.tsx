@@ -110,7 +110,7 @@ export const turingMachine = async (program: Readonly<string>, startTape: Readon
         }
         let matchingRule: Rule | null = null
         for(const rule of parsed.rules) {
-            if (state.state === rule.curState && (tapeCopy.get(state.curPosition) ?? "_") === rule.curTape) {
+            if (state.state === rule.curState && tapeCopy.get(state.curPosition) === rule.curTape) {
                 if (matchingRule !== null) {
                     throw new Error("Two rules match this state.")
                 }
@@ -125,7 +125,7 @@ export const turingMachine = async (program: Readonly<string>, startTape: Readon
             break
         }
         // execute the rule
-        tapeCopy.set(state.curPosition, matchingRule.newTape === "_" ? undefined : matchingRule.newTape)
+        tapeCopy.set(state.curPosition, matchingRule.newTape)
         state.state = matchingRule.newState
         if (matchingRule.action === ">") {
             state.curPosition++
@@ -154,4 +154,4 @@ export type TuringMachineEvent = {
     args: []
 }
 
-export type TuringMachineArguments = [Readonly<string>, Readonly<Tape>, number];
+export type TuringMachineArguments = Parameters<typeof turingMachine>;

@@ -63,7 +63,11 @@ const App = ({ manifest, store }: AppProps) => {
         <button onClick={() => setEventOverride(events.length - 1)}>End</button>
         <small>Use arrow keys to navigate</small>
         <manifest.startComponent doStart={start}/>
-        <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>
+        {curStateOverride && curEventOverride && <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>}
+        <br/>
+        <br/>
+        <br/>
+        <br/>
         <div>
             {events && events.map((x, i) => {
                 return <div key={i}>
