@@ -4,6 +4,10 @@
     .tapeCell {
         width: 30px;
         text-align: center;
+        label {
+            width: 100%;
+            display: block;
+        }
         input {
             width: 100%;
             box-sizing: border-box;

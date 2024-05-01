@@ -1,0 +1,58 @@
+.container {
+    border: 2px #f0f0f0 solid;
+    padding: 10px;
+    box-sizing: border-box;
+
+    border-radius: 16px;
+
+    display: inline-flex;
+    flex-direction: column;
+
+    .label {
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .cells {
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        height: 30px;
+        gap: 15px;
+        overflow: hidden;
+
+        .cell {
+            background-color: #f8f8f8;
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            text-align: center;
+
+            transition-property: left;
+            transition-duration: 200ms;
+            transition-timing-function: ease-in-out;
+            
+            &.middleCell {
+                border: yellow 3px solid;
+                background-color: unset;
+                box-sizing: border-box;
+                left: calc(50% - 15px);
+            }
+
+            .cellContent {
+
+            }
+
+            .cellNumber {
+                font-size: 0.8rem;
+                color: #d3d3d3;
+                position: absolute;
+                right: 2px;
+                bottom: 2px;
+
+                user-select: none;
+            }
+        }
+    }
+}

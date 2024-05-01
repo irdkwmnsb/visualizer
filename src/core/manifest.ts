@@ -1,7 +1,8 @@
 import { FC } from "react"
 import { RuntimeStore } from "./store"
 
-export type IEvent = { name: string; args: unknown[] };
+export type IEvent = { name: Exclude<string, "error">; args: unknown[] };
+export type EventOrError<Event extends IEvent> = Event | { name: "error"; error: Error };
 export type IState = object;
 export type IArguments = unknown[];
 
@@ -11,7 +12,7 @@ export type StartProps<Arguments extends IArguments> = {
 
 export type RenderProps<State extends IState, Event extends IEvent> = {
   curState: State;
-  curEvent: Event;
+  curEvent: EventOrError<Event>;
 };
 
 export type IAlgorithmManifest<

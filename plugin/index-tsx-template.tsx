@@ -1,5 +1,6 @@
 /* @refresh reload */
 import ReactDOM from "react-dom/client"
+import { StrictMode } from "react"
 import App from "/src/App"
 import { store, manifest } from "/src/visualizers/%%visName%%"
 import { enableMapSet } from "immer"
@@ -16,7 +17,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    // <React.StrictMode>
-    <App manifest={manifest} store={store}/>
-    // </React.StrictMode>,
+    <StrictMode>
+        <App manifest={manifest} store={store}/>
+    </StrictMode>,
 )

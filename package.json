@@ -31,6 +31,8 @@
     "vite-plugin-svgr": "^4.2.0"
   },
   "dependencies": {
+    "@fontsource-variable/arimo": "^5.0.21",
+    "@fontsource-variable/raleway": "^5.0.19",
     "@monaco-editor/react": "^4.6.0",
     "classnames": "^2.5.1",
     "immer": "^10.0.3",

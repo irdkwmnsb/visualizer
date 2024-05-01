@@ -25,8 +25,11 @@ const parseProgram = (program: string): Program => {
     let lineNumber = 0
     let start, accept, reject
     while(lineNumber < lines.length) { // reading header
+        if (lines[lineNumber].startsWith("#") || lines[lineNumber] === "") {
+            lineNumber++
+            continue
+        }
         const match = lines[lineNumber].toLowerCase().match(/(start|accept|reject|blank): (.+)/)
-        console.log(match)
         if (match === null) {
             break
         }
@@ -46,7 +49,12 @@ const parseProgram = (program: string): Program => {
     // reading rules.
     const rules: Rule[] = []
     while (lineNumber < lines.length) {
-        const match = lines[lineNumber].toLowerCase().match(/([^ ]+) ([^ ]+) -> ([^ ]+) ([^ ]+) (\^|<|>)/)
+        if (lines[lineNumber].startsWith("#") || lines[lineNumber] === "") {
+            lineNumber++
+            continue
+        }
+
+        const match = lines[lineNumber].toLowerCase().match(/^([^ ]+) ([^ ]+) -> ([^ ]+) ([^ ]+) (\^|<|>)$/)
         if (match === null) {
             throw new Error("Cannot parse line " + lineNumber + ": " + lines[lineNumber])
         }
@@ -62,6 +70,18 @@ const parseProgram = (program: string): Program => {
             fullString: lines[lineNumber]
         } as Rule)
         lineNumber++
+    }
+
+    if (start === undefined) {
+        throw new Error("No start state found.")
+    }
+
+    if (accept === undefined) {
+        throw new Error("No accept state found.")
+    }
+
+    if (reject === undefined) {
+        throw new Error("No reject state found.")
     }
 
     return {
@@ -80,10 +100,8 @@ type InnerState = {
     curStep: number
 }
 
-export const turingMachine = async (program: Readonly<string>, startTape: Readonly<Tape>, maxSteps: number = 10_000): Promise<Tape> => {
-    console.log("start")
+export const turingMachine = async (program: Readonly<string>, startTape: Readonly<Tape>, maxSteps: number = 10_000) => {
     const parsed = parseProgram(program)
-    console.log("parsed", parsed)
     const tapeCopy = startTape.copy()
     const state: InnerState = {
         status: "running",
@@ -135,7 +153,6 @@ export const turingMachine = async (program: Readonly<string>, startTape: Readon
         await here("execute", matchingRule)
     }
     await here("done")
-    return tapeCopy
 }
 
 export type TuringMachineState = {
@@ -145,7 +162,7 @@ export type TuringMachineState = {
 
 export type TuringMachineEvent = {
     name: "fetch",
-    args: [Rule]
+    args: [Rule | null]
 } | {
     name: "execute",
     args: [Rule]

@@ -6,14 +6,13 @@ import { useImmer } from "use-immer"
 import Editor from "@monaco-editor/react"
 import { editor } from "monaco-editor"
 import { useCallback, useRef } from "react"
-import { current } from "immer"
 
 const VIEWPORT = [-10, 10]
 
 
 export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArguments>) => {
     const [tape, updateTape] = useImmer(new Tape())
-    const editorRef = useRef<editor.IStandaloneCodeEditor>(null)
+    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
     const els = []
     for (let i = VIEWPORT[0]; i <= VIEWPORT[1]; i++) {
         els.push(
@@ -22,20 +21,23 @@ export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArgument
                 <input 
                     id={"inputTape"+i}
                     value={tape.get(i)}
+                    onFocus={(ev) => {
+                        ev.target.select()
+                    }}
+                    autoComplete="off"
                     onChange={(ev) => {
                         ev.preventDefault()
                         updateTape((draft) => {
-                            console.log(current(draft))
                             draft.set(i, ev.target.value)
-                            console.log(current(draft))
                         })
                     }}/>
             </div>
         )
     }
     const onStart = useCallback(() => {
-        console.log("tape: ", tape)
-        doStart([editorRef.current.getValue(), tape, 10_000], false)
+        if (editorRef.current !== null) {
+            doStart([editorRef.current.getValue(), tape, 10_000], false)
+        }
     }, [tape])
     return <div className={styles.startContainer}>
         <div className={styles.tapeContainer}>

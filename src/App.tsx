@@ -1,14 +1,10 @@
 /* @refresh reload */
-// import { globalStore } from "./visualizers/bubble-sort"
 import { useEffect, useState } from "react"
-import { useSyncExternalStore } from "react"
-// import { IAlgorithmManifest } from "./lib/manifest"
 import { RuntimeStore } from "./core/store"
 import { IAlgorithmManifest } from "./core/manifest"
-
-export const useVisualizer = (store: RuntimeStore) => {
-    return useSyncExternalStore(store.subscribe, store.getCurSnapshot)
-}
+import { useVisualizer } from "./core/react"
+import "@fontsource-variable/arimo"
+import "./App.module.scss"
 
 type AppProps = {
     manifest: IAlgorithmManifest,
@@ -19,10 +15,13 @@ const App = ({ manifest, store }: AppProps) => {
     const vis = useVisualizer(store)
     const {curState, curEvent, events, currentStep, start, next} = vis
     const [eventOverride, setEventOverride] = useState<number | undefined>(undefined)
-    const curEventOverride = eventOverride !== undefined ? events[eventOverride] : curEvent
-    const curStateOverride = eventOverride !== undefined ? events[eventOverride].state : curState
+    const curEventOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride] : curEvent
+    const curStateOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride].state : curState
     const doNext = () => {
-        if (eventOverride !== undefined && eventOverride < events.length - 1) {
+        if(currentStep === undefined) {
+            return
+        }
+        if (eventOverride !== undefined && events !== undefined && eventOverride < events.length - 1) {
             setEventOverride(eventOverride + 1)
         } else {
             next()
@@ -30,6 +29,9 @@ const App = ({ manifest, store }: AppProps) => {
         }
     }
     const doPrev = () => {
+        if(currentStep === undefined || events === undefined || !vis.config.storeEvents) {
+            return
+        }
         if(eventOverride === undefined) {
             setEventOverride(currentStep - 2)
         } else if (eventOverride > 0) {
@@ -57,10 +59,10 @@ const App = ({ manifest, store }: AppProps) => {
         <h1>Visualizer</h1>
         <h2>Current Step: {currentStep}</h2>
         <button onClick={doNext}>Next</button>
-        <button onClick={doPrev}>Prev</button>
-        <button onClick={() => setEventOverride(undefined)}>Reset</button>
-        <button onClick={() => setEventOverride(0)}>Beginning</button>
-        <button onClick={() => setEventOverride(events.length - 1)}>End</button>
+        <button disabled={!vis.config.storeEvents} onClick={doPrev}>Prev</button>
+        <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(undefined)}>Reset</button>
+        <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(0)}>Beginning</button>
+        <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(events!.length - 1)}>End</button>
         <small>Use arrow keys to navigate</small>
         <manifest.startComponent doStart={start}/>
         {curStateOverride && curEventOverride && <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>}
@@ -72,7 +74,7 @@ const App = ({ manifest, store }: AppProps) => {
             {events && events.map((x, i) => {
                 return <div key={i}>
                     {i === eventOverride ? "OVERRIDE" : ""}
-                    {i === currentStep - 1 ? "CUR" : ""}
+                    {i === currentStep! - 1 ? "CUR" : ""}
                     {JSON.stringify(x)}
                     <button onClick={() => setEventOverride(i)}>Jump</button>
                 </div>

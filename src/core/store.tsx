@@ -1,23 +1,28 @@
 import _ from "lodash"
-import { IEvent, IState, IArguments } from "./manifest"
+import { IEvent, IState, IArguments, EventOrError } from "./manifest"
 
-type StoredEvent<Event extends IEvent, State extends IState> = Event & {
-  state: State;
+type StoredEvent<Event extends EventOrError<IEvent>, State extends IState> = Event & {
+  state: State | null;
 };
 
-type Snapshot<
+export type Snapshot<
   State extends IState,
   Event extends IEvent,
   Arguments extends IArguments,
 > = {
   curState?: State;
-  curEvent?: StoredEvent<Event, State>;
+  curEvent?: StoredEvent<EventOrError<Event>, State>;
   currentStep?: number;
-  events?: StoredEvent<Event, State>[];
+  events?: StoredEvent<EventOrError<Event>, State>[];
   bindedObjects?: State;
+  config: {
+    noStop: boolean,
+    storeEvents: boolean,
+    storeStates: boolean
+  }
   next: () => void;
   start: (args: Arguments, noStop: boolean) => void;
-};
+}; // TODO: make union type for when the algorithm is not started.
 
 export class RuntimeStore<
   State extends IState = IState,
@@ -25,12 +30,18 @@ export class RuntimeStore<
   Arguments extends IArguments = IArguments,
 > {
     events: StoredEvent<Event, State>[] = []
-    state: State = {} as State
+    curEvent?: StoredEvent<Event, State> = undefined
+    curState: State = {} as State
+    curStep = 0
+
     continuation?: () => void
     subscribers: (() => void)[] = []
-    algorithm?: (...args) => Promise<void>
-    currentStep = 0
+    algorithm: (...args: Arguments) => Promise<void>
+    error?: Error // FIXME: this should be somehow parametrized?
+
     noStop = false
+    storeEvents = true
+    storeStates = true
 
     constructor(algorithm: (...args: Arguments) => Promise<void>) {
         this.algorithm = algorithm
@@ -46,19 +57,21 @@ export class RuntimeStore<
             )
             
         }
-        this.state[name] = value
+        this.curState[name] = value
     }
 
     here = async (name: Event["name"], ...args: Event["args"]): Promise<void> => {
-        // console.log("!!", this.state)
-        this.currentStep++
-        this.events.push({
+        this.curStep++
+        this.curEvent = {
             name,
             args,
-            // TODO: use Immer if this becomes too heavy. 
+            // TODO: use Immer if this becomes too heavy.
             // Immer allows to watch for modifications of deep nested objects.
-            state: _.cloneDeep(this.state) as State, 
-        } as StoredEvent<Event, State>)
+            state: this.storeStates ? _.cloneDeep(this.curState) as State : null,
+        } as StoredEvent<Event, State>
+        if (this.storeEvents) {
+            this.events.push(this.curEvent)
+        }
         if (this.noStop) {
             return Promise.resolve()
         }
@@ -74,13 +87,14 @@ export class RuntimeStore<
         }
     }
 
-    get curState() {
-        return this.events[this.currentStep - 1]?.state
-    }
+    // get curState(): State {
+    //     // return this.events[this.currentStep - 1]?.state
+    //     return this.state
+    // }
 
-    get curEvent() {
-        return this.events[this.currentStep - 1]
-    }
+    // get curEvent() {
+    //     return this.events[this.currentStep - 1]
+    // }
 
     notifyReact = () => {
         this.updateSnapshot()
@@ -90,12 +104,17 @@ export class RuntimeStore<
     updateSnapshot = () => {
         this._dataSnapshot = {
             curState: this.curState,
-            curEvent: this.curEvent,
-            currentStep: this.currentStep,
+            curEvent: this.error === undefined ? this.curEvent : {name: "error", error: this.error, state: null},
+            currentStep: this.curStep,
             events: this.events,
-            bindedObjects: this.state,
+            bindedObjects: this.curState,
             next: this.next,
             start: this.start,
+            config: {
+                storeEvents: this.storeEvents,
+                storeStates: this.storeStates,
+                noStop: this.noStop
+            }
         }
     }
 
@@ -106,11 +125,16 @@ export class RuntimeStore<
     start = (args: Arguments, noStop: boolean) => {
         this.events = []
         this.continuation = undefined
-        this.currentStep = 0
-        this.state = {} as State
+        this.curStep = 0
+        this.curState = {} as State
         this.noStop = noStop
+        this.error = undefined
+        this.curEvent = undefined
         this.notifyReact()
         this.algorithm(...args).then(() => {
+            this.notifyReact()
+        }).catch((e) => {
+            this.error = e
             this.notifyReact()
         })
     }
@@ -125,5 +149,10 @@ export class RuntimeStore<
     _dataSnapshot: Snapshot<State, Event, Arguments> = {
         start: this.start,
         next: this.next,
+        config: {
+            storeEvents: this.storeEvents,
+            storeStates: this.storeStates,
+            noStop: this.noStop
+        }
     }
 }

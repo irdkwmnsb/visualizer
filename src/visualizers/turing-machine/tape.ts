@@ -22,9 +22,6 @@ export class Tape {
     }
 
     get(index: number): string {
-        if (!this._tapeContainer.has(index)) {
-            return "_"
-        }
-        return this._tapeContainer.get(index)
+        return this._tapeContainer.get(index) || "_"
     }
 }
