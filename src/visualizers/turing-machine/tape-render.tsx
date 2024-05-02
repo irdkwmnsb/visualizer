@@ -14,7 +14,7 @@ type TapeCellProps = {
     headPosition: number
 }
 
-const TapeCell = memo(function TapeCell({index, value, headPosition}: TapeCellProps) {
+const TapeCell = ({index, value, headPosition}: TapeCellProps) => {
     const indexFromLeft = index - headPosition + VIEWPORT - 1
     const prevValue = usePrevious(value)
     return (
@@ -37,7 +37,7 @@ const TapeCell = memo(function TapeCell({index, value, headPosition}: TapeCellPr
             </div>
         </div>
     )
-})
+}
 
 type TapeRenderProps = {
     tape: Tape
@@ -61,9 +61,7 @@ export const TapeRender = ({tape, headPosition, label = "Tape"}: TapeRenderProps
             {_.range(headPosition - VIEWPORT - leftAdd, headPosition + VIEWPORT + 1 + rightAdd).map((index) => (
                 <TapeCell value={tape.get(index)} index={index} headPosition={headPosition} key={index}/>
             ))}
-            <div className={styles.cell + " " + styles.middleCell}>
-
-            </div>
+            <div className={styles.cell + " " + styles.middleCell}></div>
         </div>
     </div>
 }
