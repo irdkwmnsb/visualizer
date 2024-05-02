@@ -1,4 +1,4 @@
-import { VisArray } from "../../components/array"
+import { VisArray } from "../../components/array/array"
 import { RenderProps } from "../../core/manifest"
 import { Color } from "../../visuals/colors"
 import { BubbleSortEvent, BubbleSortState } from "./bubble-sort"
@@ -21,12 +21,9 @@ export const BubbleSortRender = ({ curState, curEvent }: RenderProps<BubbleSortS
         <div>
             {curState && <VisArray 
                 array={curState.array}
-                highlights={{
+                pointers={{
                     [curEvent.args[0]]: COLORS[curEvent.name],
                     [curEvent.args[1]]: COLORS[curEvent.name]
-                }}
-                pointers={{
-                    
                 }}
                 color={
                     curEvent.name === "done" && Color.GREEN

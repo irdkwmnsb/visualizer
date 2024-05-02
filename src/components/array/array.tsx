@@ -1,8 +1,8 @@
 import classes from "./array.module.scss"
 import classNames from "classnames"
-import { RenderableData } from "../temp"
-import { Color } from "../visuals/colors"
-import { CSSProperties } from "react"
+import { RenderableData } from "../../temp"
+import { Color } from "../../visuals/colors"
+import { CSSProperties, SVGProps } from "react"
 
 /** A pointer is ethier a specific color, or a label, or both specified in an object form */
 type PointerProps = {
@@ -28,6 +28,28 @@ type VisArrayProps<T extends RenderableData> = {
     color?: Color | false
 }
 
+const Pointer = <T extends SVGSVGElement,>({color="FFF", ...props}: SVGProps<T> & {color?: string}) =>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlSpace="preserve"
+        width={17}
+        height={34}
+        viewBox="0 0 34 68"
+        {...props}
+    >
+        <path
+            fill="#FFF"
+            d="M22 68H12C5.4 68 0 62.6 0 56V12C0 5.4 5.4 0 12 0h10c6.6 0 12 5.4 12 12v44c0 6.6-5.4 12-12 12z"
+        />
+        <path
+            fill="none"
+            stroke={color}
+            strokeMiterlimit={9.999}
+            strokeWidth={4}
+            d="M4.7 22 17 9.8 29.2 22M17 9.8V61"
+        />
+    </svg>
+
 export const VisArray = <T extends RenderableData,>({ 
     array,
     direction = "row", 
@@ -36,17 +58,26 @@ export const VisArray = <T extends RenderableData,>({
     pointers = {},
     color = undefined 
 }: VisArrayProps<T>) => {
-    return <div className={classNames(classes.arrayBox, classes[direction])}>
+    const needsPointers = (pointers instanceof Array && pointers.length !== 0) || 
+                          (pointers instanceof Object && Object.keys(pointers).length !== 0)
+    console.log(pointers, needsPointers)
+    return <div className={classNames(classes.arrayBox, classes[direction], {
+        [classes.withPointers]: needsPointers
+    })}>
         {array.map((el, index) => {
             const addedStyles: CSSProperties =  {}
-            if (highlights[index] !== undefined) {
+            if (highlights[index] !== undefined) { // todo: add support for arrays 
                 addedStyles.outline = "2px solid " + highlights[index]
             }
-            if (colors[index] !== undefined) {
+            if (colors[index] !== undefined) { // todo: add support for arrays
                 addedStyles.backgroundColor = "2px solid " + colors[index]
             }
-            if (color !== undefined && color !== false) {
+            if (color !== undefined && color !== false) { 
                 addedStyles.backgroundColor = color
+            }
+            let pointer = null
+            if (pointers[index] !== undefined) { // todo: add support for arrays and labels
+                pointer = <Pointer color={pointers[index]}/>
             }
             return <div
                 key={el + "-" + index}
@@ -54,6 +85,9 @@ export const VisArray = <T extends RenderableData,>({
                 style={addedStyles}
             >
                 {el}
+                <div className={classes.pointer}>
+                    {pointer}
+                </div>
             </div>
         })}
     </div>
