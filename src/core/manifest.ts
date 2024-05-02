@@ -23,6 +23,12 @@ export type IAlgorithmManifest<
   algo: (...args: Arguments) => Promise<void>; // fixme: Return type should not be Promise<void>
   startComponent: FC<StartProps<Arguments>>;
   renderComponent: FC<RenderProps<State, Event>>;
+  nameRu: string; // TODO: Think about i18n a bit more.
+  nameEn: string;
+  authorRu: string;
+  authorEn: string;
+  descriptionRu: string;
+  descriptionEn: string;
 };
 
 export const initAlgo = <

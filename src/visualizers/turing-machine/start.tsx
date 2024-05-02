@@ -5,7 +5,7 @@ import { TuringMachineArguments } from "./turing-machine"
 import { useImmer } from "use-immer"
 import Editor from "@monaco-editor/react"
 import { editor } from "monaco-editor"
-import { useCallback, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 const VIEWPORT = [-10, 10]
 
@@ -39,6 +39,17 @@ export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArgument
             doStart([editorRef.current.getValue(), tape, 10_000], false)
         }
     }, [tape])
+    useEffect(() => { // https://github.com/Microsoft/monaco-editor/issues/28
+        const resize = () => {
+            if (editorRef.current !== null) {
+                editorRef.current.layout()
+            } 
+        }
+        window.addEventListener("resize", resize)
+        return () => {
+            window.removeEventListener("resize", resize)
+        }
+    }, [])
     return <div className={styles.startContainer}>
         <div className={styles.tapeContainer}>
             {els}

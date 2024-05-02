@@ -4,11 +4,15 @@ import { RuntimeStore } from "./core/store"
 import { IAlgorithmManifest } from "./core/manifest"
 import { useVisualizer } from "./core/react"
 import "@fontsource-variable/arimo"
-import "./App.module.scss"
+import styles from "./App.module.scss"
 
 type AppProps = {
     manifest: IAlgorithmManifest,
     store: RuntimeStore
+}
+
+enum Tab {
+    Starter, Render
 }
 
 const App = ({ manifest, store }: AppProps) => {
@@ -17,6 +21,7 @@ const App = ({ manifest, store }: AppProps) => {
     const [eventOverride, setEventOverride] = useState<number | undefined>(undefined)
     const curEventOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride] : curEvent
     const curStateOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride].state : curState
+    const curTab = useState<number>(0)
     const doNext = () => {
         if(currentStep === undefined) {
             return
@@ -55,30 +60,42 @@ const App = ({ manifest, store }: AppProps) => {
         }
     }, [eventOverride, currentStep])
 
-    return <div>
-        <h1>Visualizer</h1>
-        <h2>Current Step: {currentStep}</h2>
-        <button onClick={doNext}>Next</button>
-        <button disabled={!vis.config.storeEvents} onClick={doPrev}>Prev</button>
-        <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(undefined)}>Reset</button>
-        <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(0)}>Beginning</button>
-        <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(events!.length - 1)}>End</button>
-        <small>Use arrow keys to navigate</small>
-        <manifest.startComponent doStart={start}/>
-        {curStateOverride && curEventOverride && <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>}
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <div>
-            {events && events.map((x, i) => {
-                return <div key={i}>
-                    {i === eventOverride ? "OVERRIDE" : ""}
-                    {i === currentStep! - 1 ? "CUR" : ""}
-                    {JSON.stringify(x)}
-                    <button onClick={() => setEventOverride(i)}>Jump</button>
-                </div>
-            })}
+    return <div className={styles.app}>
+        <div className={styles.header}>
+            <h1>{manifest.nameRu}</h1>
+            <article>{manifest.descriptionRu}</article>
+            <section className={styles.tabSwitcher}>
+                
+            </section>
+        </div>
+        <section className={styles.main}>
+            <div className={styles.tab}>
+                <manifest.startComponent doStart={start}/>
+            </div>
+            <div className={styles.tab}>
+                {curStateOverride && curEventOverride && <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>}
+            </div>
+        </section>
+        <div className={styles.sidebar}>
+            <section className={styles.player}>
+                <div>Current Step: {currentStep}</div>
+                <button onClick={doNext}>Next</button>
+                <button disabled={!vis.config.storeEvents} onClick={doPrev}>Prev</button>
+                <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(undefined)}>Reset</button>
+                <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(0)}>Beginning</button>
+                <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(events!.length - 1)}>End</button>
+                <small>Use arrow keys to navigate</small>
+            </section>
+            <section className={styles.events}>
+                {events && events.map((x, i) => {
+                    return <div key={i}>
+                        {i === eventOverride ? "OVERRIDE" : ""}
+                        {i === currentStep! - 1 ? "CUR" : ""}
+                        {JSON.stringify(x)}
+                        <button onClick={() => setEventOverride(i)}>Jump</button>
+                    </div>
+                })}
+            </section>
         </div>
     </div>
 }
