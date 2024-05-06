@@ -8,7 +8,7 @@ export const Index = ({visualizers}: IndexProps) => {
     return <ul>
         {visualizers.map((entry) => (
             <li key={entry}>
-                <a href={"/" + entry + ".html"}>
+                <a href={import.meta.env.BASE_URL + entry + ".html"}>
                     {entry}
                 </a>
             </li>
