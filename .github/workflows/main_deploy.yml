@@ -1,4 +1,4 @@
-name: Deploy PR previews
+name: Deploy main
 
 on:
   push:
