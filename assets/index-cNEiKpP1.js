@@ -1,0 +1,1 @@
+import{j as e,e as s,c as n,r as o}from"./immer-BbW4sL0d.js";const c=({visualizers:r})=>e.jsx("ul",{children:r.map(t=>e.jsx("li",{children:e.jsx("a",{href:"/"+t+".html",children:t})},t))});s();document.getElementById("root");const i=["bubble-sort","turing-machine"];n.createRoot(document.getElementById("root")).render(e.jsx(o.StrictMode,{children:e.jsx(c,{visualizers:i})}));
