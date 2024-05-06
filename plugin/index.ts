@@ -2,10 +2,13 @@ import { Plugin, ViteDevServer } from "vite"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-type IndexTemplateParams = { visName: string };
+type VisTemplateParams = { visName: string };
+type IndexTemplateParams = { manifests: string };
+const visHTMLTemplatePath = path.resolve(__dirname, "vis-template.html")
+const visTSTemplatePath = path.resolve(__dirname, "vis-tsx-template.tsx")
 const indexHTMLTemplatePath = path.resolve(__dirname, "index-template.html")
 const indexTSTemplatePath = path.resolve(__dirname, "index-tsx-template.tsx")
-const getTemplate = <T>(templPath: string) => async (props: T ): Promise<string> => {
+const getTemplate = <T extends Record<string, string>>(templPath: string) => async (props: T): Promise<string> => {
     let templ = await fs.readFile(templPath, { encoding: "utf-8" })
     Object.entries(props).forEach(([propKey, propVal]) => {
         templ = templ.replaceAll(`%%${propKey}%%`, propVal)
@@ -14,10 +17,20 @@ const getTemplate = <T>(templPath: string) => async (props: T ): Promise<string>
 }
 const getIndexHTMLTemplate = getTemplate<IndexTemplateParams>(indexHTMLTemplatePath)
 const getIndexTSTemplate = getTemplate<IndexTemplateParams>(indexTSTemplatePath)
+const getVisHTMLTemplate = getTemplate<VisTemplateParams>(visHTMLTemplatePath)
+const getVisTSTemplate = getTemplate<VisTemplateParams>(visTSTemplatePath)
 
 export const visualizerCodegen = async (): Promise<Plugin> => {
-    const visualizers = await fs.readdir("./src/visualizers") as string[]
+    const singleVis = process.env["VISUALIZER_SINGLE"]
+    const visualizers = singleVis === undefined ? await fs.readdir("./src/visualizers") as string[] : [singleVis]
+    if (visualizers.indexOf("index") !== -1) {
+        console.error("Don't use 'index' for visualizer names")
+        process.exit(-1)
+    }
     const visualizersEntries = visualizers.map(f => `${f}.html`)
+    if (singleVis === undefined) {
+        visualizersEntries.push("index.html")
+    }
     const matchVizByRegexp = (regex: RegExp) => (id: string) => {
         const match = id.match(regex)
         if(match === null) {
@@ -45,12 +58,15 @@ export const visualizerCodegen = async (): Promise<Plugin> => {
                         })
                         .end(body)
                 }
-                if(req.url === "/") {
-                    const body = visualizersEntries.map((entry) => `<a href="${entry}">${entry}</a>`).join("<br>")
+                if (req.url === undefined) {
+                    next()
+                } else if (req.url === "/") {
+                    const visName = req.url.replace("/", "").replace(".html", "")
+                    const body = await server.transformIndexHtml(req.url, await getIndexHTMLTemplate({ manifests: JSON.stringify(visualizers) }))
                     sendBody(body)
                 } else if(isVisEntry(req.url)) {
                     const visName = req.url.replace("/", "").replace(".html", "")
-                    const body = await server.transformIndexHtml(req.url, await getIndexHTMLTemplate({ visName }))
+                    const body = await server.transformIndexHtml(req.url, await getVisHTMLTemplate({ visName }))
                     sendBody(body)
                 } else {
                     next()
@@ -60,29 +76,30 @@ export const visualizerCodegen = async (): Promise<Plugin> => {
         async options(options) {
             const newOptions = {
                 ...options,
-                input: visualizersEntries,
-                output: {
-                    inlineDynamicImports: false,
-                },
+                input: visualizersEntries
             }
             return newOptions
         },
         resolveId: {
             order: "pre",
             async handler(source) {
-                if(isVisEntry(source) || isVisIndex(source)) {
+                if(isVisEntry(source) || isVisIndex(source) || source === "index.html" || source === "/index.tsx") {
                     return source
                 }
                 return null
             }
         },
-        async load(id, options) {
-            if (isVisEntry(id)) {
-                const [_, visName] = id.match(visEntryRegexp)
-                return await getIndexHTMLTemplate({visName})
+        async load(id) {
+            if (id === "index.html") {
+                return await getIndexHTMLTemplate({manifests: JSON.stringify(visualizers)})
+            } else if (id === "/index.tsx") {
+                return await getIndexTSTemplate({manifests: JSON.stringify(visualizers)})
+            } else if (isVisEntry(id)) {
+                const [_, visName] = id.match(visEntryRegexp)!
+                return await getVisHTMLTemplate({visName})
             } else if(isVisIndex(id)) {
-                const [_, visName] = id.match(visIndexRegexp)
-                return await getIndexTSTemplate({visName})
+                const [_, visName] = id.match(visIndexRegexp)!
+                return await getVisTSTemplate({visName})
             }
         },
     }

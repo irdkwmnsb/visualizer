@@ -14,7 +14,6 @@ export default defineConfig({
         svgr()
         // viteSingleFile()
     ],
-    // appType: "custom",
     server: {
         port: 3000,
     },
@@ -22,11 +21,5 @@ export default defineConfig({
         target: "esnext",
         emptyOutDir: true,
         outDir: "dist",
-        // rollupOptions: {
-        //     input: {
-        //         main: resolve(__dirname, 'index.html'),
-        //         "bubble-sort": resolve(__dirname, 'test.html')
-        //     }
-        // }
     },
 })
