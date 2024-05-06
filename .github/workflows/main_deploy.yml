@@ -1,12 +1,9 @@
 name: Deploy PR previews
 
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - closed
+  push:
+    branches:
+      - master
 
 permissions: write-all
 
@@ -51,6 +48,8 @@ jobs:
         run: pnpm run build --base=./
 
       - name: Deploy preview
-        uses: rossjrw/pr-preview-action@v1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          source-dir: ./dist/
+            force: false
+            clean-exclude: pr-preview
+            folder: ./dist/
