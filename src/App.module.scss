@@ -34,8 +34,23 @@ html, body {
         grid-row-end: 3;
         grid-column-start: 1;
         grid-column-end: 2;
+        overflow: hidden;
+        position: relative;
         .tab {
-
+            position: absolute;
+            transition: left 300ms ease-out;
+            &.tabStarter {
+                left: -100%;
+                &.enabled {
+                    left: 0;
+                }
+            }
+            &.tabRender {
+                left: 100%;
+                &.enabled {
+                    left: 0;
+                }
+            }
         }
     }
     .sidebar {

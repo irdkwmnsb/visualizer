@@ -87,15 +87,6 @@ export class RuntimeStore<
         }
     }
 
-    // get curState(): State {
-    //     // return this.events[this.currentStep - 1]?.state
-    //     return this.state
-    // }
-
-    // get curEvent() {
-    //     return this.events[this.currentStep - 1]
-    // }
-
     notifyReact = () => {
         this.updateSnapshot()
         this.subscribers.forEach((x) => x())

@@ -5,6 +5,7 @@ import { IAlgorithmManifest } from "./core/manifest"
 import { useVisualizer } from "./core/react"
 import "@fontsource-variable/arimo"
 import styles from "./App.module.scss"
+import classNames from "classnames"
 
 type AppProps = {
     manifest: IAlgorithmManifest,
@@ -21,7 +22,8 @@ const App = ({ manifest, store }: AppProps) => {
     const [eventOverride, setEventOverride] = useState<number | undefined>(undefined)
     const curEventOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride] : curEvent
     const curStateOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride].state : curState
-    const curTab = useState<number>(0)
+    const isRunning = curEventOverride !== undefined && curStateOverride !== undefined
+    const [curTab, setCurTab] = useState<Tab>(Tab.Starter)
     const doNext = () => {
         if(currentStep === undefined) {
             return
@@ -42,6 +44,10 @@ const App = ({ manifest, store }: AppProps) => {
         } else if (eventOverride > 0) {
             setEventOverride(eventOverride - 1)
         }
+    }
+    const doStart: typeof start = (...args) => {
+        setCurTab(Tab.Render)
+        start(...args)
     }
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
@@ -65,14 +71,19 @@ const App = ({ manifest, store }: AppProps) => {
             <h1>{manifest.nameRu}</h1>
             <article>{manifest.descriptionRu}</article>
             <section className={styles.tabSwitcher}>
-                
+                <button onClick={() => setCurTab(Tab.Starter)}>Starter</button>
+                <button onClick={() => setCurTab(Tab.Render)} disabled={!isRunning}>Render</button>
             </section>
         </div>
         <section className={styles.main}>
-            <div className={styles.tab}>
-                <manifest.startComponent doStart={start}/>
+            <div className={classNames(styles.tab, styles.tabStarter, {
+                [styles.enabled]: curTab === Tab.Starter
+            })}>
+                <manifest.startComponent doStart={doStart}/>
             </div>
-            <div className={styles.tab}>
+            <div className={classNames(styles.tab, styles.tabRender, {
+                [styles.enabled]: curTab === Tab.Render
+            })}>
                 {curStateOverride && curEventOverride && <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>}
             </div>
         </section>
