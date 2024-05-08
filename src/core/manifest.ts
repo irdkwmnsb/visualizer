@@ -12,6 +12,11 @@ export type StartProps<Arguments extends IArguments> = {
 
 export type RenderProps<State extends IState, Event extends IEvent> = {
   curState: State;
+  curEvent: Event;
+};
+
+export type SafeRenderProps<State extends IState, Event extends IEvent> = {
+  curState: State;
   curEvent: EventOrError<Event>;
 };
 
@@ -22,7 +27,18 @@ export type IAlgorithmManifest<
 > = {
   algo: (...args: Arguments) => Promise<void>; // fixme: Return type should not be Promise<void>
   startComponent: FC<StartProps<Arguments>>;
+  renderComponent: FC<SafeRenderProps<State, Event>>;
+  nameRu: string; // TODO: Think about i18n a bit more.
+  nameEn: string;
+  authorRu: string;
+  authorEn: string;
+  descriptionRu: string;
+  descriptionEn: string;
+} | {
+  algo: (...args: Arguments) => Promise<void>; // fixme: Return type should not be Promise<void>
+  startComponent: FC<StartProps<Arguments>>;
   renderComponent: FC<RenderProps<State, Event>>;
+  handleErrorsForMe: true; // TODO: naming is weird but whatever
   nameRu: string; // TODO: Think about i18n a bit more.
   nameEn: string;
   authorRu: string;
@@ -39,14 +55,16 @@ export const initAlgo = <
 >(
         manifest: Manifest
     ): {
-  store: RuntimeStore<State, Event, Arguments>;
-  here: (name: Event["name"], ...args: Event["args"]) => Promise<void>;
-  bind: (name: keyof State, value: State[keyof State]) => void;
+  store: RuntimeStore<State, Event, Arguments>; // TODO: not sure how to remove RuntimeStore everywhere here
+  here: RuntimeStore<State, Event, Arguments>["here"];
+  bind: RuntimeStore<State, Event, Arguments>["bind"];
+  update: RuntimeStore<State, Event, Arguments>["update"];
 } => {
     const store = new RuntimeStore<State, Event, Arguments>(manifest.algo)
     return {
         store,
         bind: (name, value) => store.bind(name, value),
+        update: (name, newValue) => store.update(name, newValue),
         here: (name, ...args) => store.here(name, ...args),
     }
 }

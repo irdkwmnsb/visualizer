@@ -8,8 +8,9 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint --fix .",
-    "tsc": "tsc"
+    "lint": "concurrently --group \"npm run lint:*\"",
+    "lint:js": "eslint .",
+    "lint:typecheck": "tsc --noEmit"
   },
   "license": "GPL-3.0+",
   "devDependencies": {
@@ -20,6 +21,7 @@
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "prettier": "^3.1.1",

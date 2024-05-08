@@ -1,5 +1,5 @@
 import { VisArray } from "../../components/array/array"
-import { RenderProps } from "../../core/manifest"
+import { RenderProps, SafeRenderProps } from "../../core/manifest"
 import { Color } from "../../visuals/colors"
 import { BubbleSortEvent, BubbleSortState } from "./bubble-sort"
 
@@ -19,6 +19,9 @@ export const BubbleSortRender = ({ curState, curEvent }: RenderProps<BubbleSortS
                     [curEvent.args[0]]: COLORS[curEvent.name],
                     [curEvent.args[1]]: COLORS[curEvent.name]
                 }}
+                colors={
+                    (index) => index + 1 > curState.sortedFrom ? Color.GREEN : undefined
+                }
                 color={
                     curEvent.name === "done" && Color.GREEN
                 }

@@ -20,6 +20,7 @@ const App = ({ manifest, store }: AppProps) => {
     const vis = useVisualizer(store)
     const {curState, curEvent, events, currentStep, start, next} = vis
     const [eventOverride, setEventOverride] = useState<number | undefined>(undefined)
+    const [skipCounter, setSkipCounter] = useState<number>(undefined)
     const curEventOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride] : curEvent
     const curStateOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride].state : curState
     const isRunning = curEventOverride !== undefined && curStateOverride !== undefined
@@ -36,7 +37,7 @@ const App = ({ manifest, store }: AppProps) => {
         }
     }
     const doPrev = () => {
-        if(currentStep === undefined || events === undefined || !vis.config.storeEvents) {
+        if(currentStep === undefined || events === undefined || !vis.config.storeEvents || currentStep === 0 || eventOverride === 0) {
             return
         }
         if(eventOverride === undefined) {
@@ -47,6 +48,7 @@ const App = ({ manifest, store }: AppProps) => {
     }
     const doStart: typeof start = (...args) => {
         setCurTab(Tab.Render)
+        setEventOverride(undefined)
         start(...args)
     }
     useEffect(() => {
@@ -68,6 +70,7 @@ const App = ({ manifest, store }: AppProps) => {
 
     return <div className={styles.app}>
         <div className={styles.header}>
+            <a onClick={(_) => history.back()}>&larr; Go back</a>
             <h1>{manifest.nameRu}</h1>
             <article>{manifest.descriptionRu}</article>
             <section className={styles.tabSwitcher}>
@@ -89,23 +92,33 @@ const App = ({ manifest, store }: AppProps) => {
         </section>
         <div className={styles.sidebar}>
             <section className={styles.player}>
-                <div>Current Step: {currentStep}</div>
-                <button onClick={doNext}>Next</button>
-                <button disabled={!vis.config.storeEvents} onClick={doPrev}>Prev</button>
-                <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(undefined)}>Reset</button>
-                <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(0)}>Beginning</button>
-                <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(events!.length - 1)}>End</button>
+                <div>
+                    {currentStep === undefined ? 
+                        "Not started" : 
+                        "Step " + (eventOverride === undefined ? currentStep : eventOverride + 1)
+                    }
+                </div>
+                <div className={styles.controls}>
+                    <button onClick={doNext}>Next</button>
+                    <button disabled={!vis.config.storeEvents} onClick={doPrev}>Prev</button>
+                    <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(0)}>Beginning</button>
+                    <button disabled={!vis.config.storeEvents} onClick={() => setEventOverride(events!.length - 1)}>End</button>
+                </div>
                 <small>Use arrow keys to navigate</small>
             </section>
             <section className={styles.events}>
-                {events && events.map((x, i) => {
-                    return <div key={i}>
-                        {i === eventOverride ? "OVERRIDE" : ""}
-                        {i === currentStep! - 1 ? "CUR" : ""}
-                        {JSON.stringify(x)}
-                        <button onClick={() => setEventOverride(i)}>Jump</button>
-                    </div>
-                })}
+                Events:
+                <div>
+                    {events ? events.map((x, i) => {
+                        const isSelected = i === eventOverride || (eventOverride === undefined && i === currentStep! - 1)
+                        return <div key={i} className={classNames(styles.event, {
+                            [styles.selected]: isSelected
+                        })} onClick={() => setEventOverride(i)}>
+                            <button onClick={() => setEventOverride(i)} disabled={isSelected}>&rarr;</button>
+                            {i + 1} {x.name}
+                        </div>
+                    }) : "Nothing yet.."}
+                </div>
             </section>
         </div>
     </div>

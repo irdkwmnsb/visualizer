@@ -9,12 +9,19 @@ export const manifest: BubbleSortManifest = {
     algo: bubbleSort,
     startComponent: BubbleSortStarter,
     renderComponent: BubbleSortRender,
+    handleErrorsForMe: true,
+    nameEn: "Bubble sort",
+    descriptionEn: "Bubble sort algorithm",
+    nameRu: "Пузырьковая сортировка",
+    descriptionRu: "Алгоритм пузырьковой сортировки",
+    authorEn: "Alzhanov Maxim",
+    authorRu: "Альжанов Максим"
 }
 
 
 // todo: move to codegen
 // todo: work on types so we don't have to specify them here.
-export const { bind, here, store } = initAlgo<BubbleSortState, BubbleSortEvent, BubbleSortArguments, BubbleSortManifest>(manifest)
+export const { bind, here, update, store } = initAlgo<BubbleSortState, BubbleSortEvent, BubbleSortArguments, BubbleSortManifest>(manifest)
 
 // This doesn't compile in bubble-sort.tsx
 // export const { bind, here, store } = initAlgo(manifest)

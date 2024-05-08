@@ -1,11 +1,13 @@
-import { bind, here } from "./"
+import { bind, here, update } from "./"
 
 export const bubbleSort = async (array: number[]) => {
     bind("array", array)
     let sorted = false
+    const n = array.length
+    let sortedFrom = n
     while (!sorted) {
         sorted = true
-        for (let i = 0; i < array.length - 1; i++) {
+        for (let i = 0; i < sortedFrom - 1; i++) {
             await here("compare", i, i + 1)
             if (array[i] > array[i + 1]) {
                 sorted = false;
@@ -13,12 +15,15 @@ export const bubbleSort = async (array: number[]) => {
                 await here("swap", i, i + 1)
             }
         }
+        sortedFrom--
+        update("sortedFrom", sortedFrom)
     }
     await here("done")
 }
 
 export type BubbleSortState = {
     array: number[];
+    sortedFrom: number;
 }
 
 export type BubbleSortEvent = {

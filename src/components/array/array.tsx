@@ -22,8 +22,8 @@ type VisArrayProps<T extends RenderableData> = {
     highlights?: Record<number, Color> | number[],
     /** Can either be an array of indecies to point on, or an object specifying a pointer for each index */
     pointers?: Record<number, PointerProps> | number[], // todo
-    /** Can either be an array of indecies to color, or an object specifying color for each index */
-    colors?: Record<number, Color> | number[],
+    /** Can either be an array of indecies to color, or an object specifying color for each index, or a function to return color for each index */
+    colors?: Record<number, Color> | number[] | ((index: number, value: T) => Color | undefined),
     /** Color of this array */
     color?: Color | false
 }
@@ -60,7 +60,6 @@ export const VisArray = <T extends RenderableData,>({
 }: VisArrayProps<T>) => {
     const needsPointers = (pointers instanceof Array && pointers.length !== 0) || 
                           (pointers instanceof Object && Object.keys(pointers).length !== 0)
-    console.log(pointers, needsPointers)
     return <div className={classNames(classes.arrayBox, classes[direction], {
         [classes.withPointers]: needsPointers
     })}>
@@ -69,12 +68,24 @@ export const VisArray = <T extends RenderableData,>({
             if (highlights[index] !== undefined) { // todo: add support for arrays 
                 addedStyles.outline = "2px solid " + highlights[index]
             }
-            if (colors[index] !== undefined) { // todo: add support for arrays
-                addedStyles.backgroundColor = "2px solid " + colors[index]
-            }
+            
             if (color !== undefined && color !== false) { 
                 addedStyles.backgroundColor = color
+            } else {
+                if (typeof colors === "function") {
+                    const color = colors(index, el)
+                    if (color !== undefined) {
+                        addedStyles.backgroundColor = color
+                    }
+                } else if (Array.isArray(colors)) {
+                    if (colors.indexOf(index) !== -1) {
+                        addedStyles.backgroundColor = "gray"
+                    }
+                } else if(colors[index] !== undefined) {
+                    addedStyles.backgroundColor = colors[index]
+                }
             }
+
             let pointer = null
             if (pointers[index] !== undefined) { // todo: add support for arrays and labels
                 pointer = <Pointer color={pointers[index]}/>

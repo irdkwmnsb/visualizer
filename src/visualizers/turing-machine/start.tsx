@@ -3,18 +3,44 @@ import { StartProps } from "../../core/manifest"
 import { Tape } from "./tape"
 import { TuringMachineArguments } from "./turing-machine"
 import { useImmer } from "use-immer"
-import Editor from "@monaco-editor/react"
-import { editor } from "monaco-editor"
-import { useCallback, useEffect, useRef } from "react"
+import * as monaco from "monaco-editor"
+import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker"
+import { Editor, loader } from "@monaco-editor/react" // TODO: https://www.npmjs.com/package/vite-plugin-monaco-editor
+import { useCallback, useEffect, useRef, useState } from "react"
 
 const VIEWPORT = [-10, 10]
 
+self.MonacoEnvironment = {
+    getWorker() {
+        return new editorWorker()
+    }
+}
+
+loader.config({ monaco })
+
+monaco.languages.register({id: "turing"})
+monaco.languages.setMonarchTokensProvider("turing", {
+    ignoreCase: false,
+    defaultToken: "invalid",
+    tokenizer: {
+        root: [
+            [/(start|accept|reject):\s.*/, "comment"],
+            [/./, {token: "@rematch", next: "program"}]
+        ],
+        program: [
+            [/.*/, "text"] 
+            // Turns out monarch can't really parse state names and highlight them accordingly. 
+            // I guess it's better to make my own language server which i'm not in the mood at the moment.
+        ]
+    }
+})
 
 export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArguments>) => {
     const [tape, updateTape] = useImmer(new Tape())
-    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
+    const [centerCell, setCenterCell] = useState(0)
+    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
     const els = []
-    for (let i = VIEWPORT[0]; i <= VIEWPORT[1]; i++) {
+    for (let i = centerCell + VIEWPORT[0]; i <= centerCell + VIEWPORT[1]; i++) {
         els.push(
             <div className={styles.tapeCell} key={i}>
                 <label htmlFor={"inputTape" + i}>{i}</label>
@@ -22,6 +48,7 @@ export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArgument
                     id={"inputTape"+i}
                     value={tape.get(i)}
                     onFocus={(ev) => {
+                        setCenterCell(i)
                         ev.target.select()
                     }}
                     autoComplete="off"
@@ -51,10 +78,17 @@ export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArgument
         }
     }, [])
     return <div className={styles.startContainer}>
+        {centerCell}
         <div className={styles.tapeContainer}>
             {els}
         </div>
-        <Editor height="300px" onMount={(editor) => editorRef.current = editor} defaultValue="start: s
+        <Editor 
+            height="300px" 
+            onMount={(editor) => {
+                return editorRef.current = editor
+            }} 
+            language="turing"
+            defaultValue="start: s
 accept: ac
 reject: rj
 s _ -> ac _ ^

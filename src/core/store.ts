@@ -47,17 +47,21 @@ export class RuntimeStore<
         this.algorithm = algorithm
     }
 
-    bind = (name: keyof State, value: State[keyof State]) => {
+    bind = (name: keyof State, value: State[keyof State] & object) => {
         if (!(value instanceof Object)) {
             console.warn(
                 `${String(
                     name
                 )} is not an object, so it won't be binded and watched for changes. ` +
-          "If you need to use it in the renderer, you should probably pass it in \"here\""
+          "If you need to use it in the renderer, you should probably manually update it with \"update\""
             )
             
         }
         this.curState[name] = value
+    }
+
+    update = (name: keyof State, newValue: State[keyof State]) => {
+        this.curState[name] = newValue
     }
 
     here = async (name: Event["name"], ...args: Event["args"]): Promise<void> => {
