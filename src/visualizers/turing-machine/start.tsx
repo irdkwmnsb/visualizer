@@ -3,7 +3,7 @@ import { StartProps } from "../../core/manifest"
 import { Tape } from "./tape"
 import { TuringMachineArguments } from "./turing-machine"
 import { useImmer } from "use-immer"
-import * as monaco from "monaco-editor"
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js"
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker"
 import { Editor, loader } from "@monaco-editor/react" // TODO: https://www.npmjs.com/package/vite-plugin-monaco-editor
 import { useCallback, useEffect, useRef, useState } from "react"
