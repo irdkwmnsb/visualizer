@@ -1,4 +1,4 @@
-import { bind, here } from "."
+import { bind, here, update } from "."
 import { Tape } from "./tape"
 
 type TapeMove = ">" | "^" | "<"
@@ -112,6 +112,7 @@ export const turingMachine = async (program: Readonly<string>, startTape: Readon
     }
     bind("machineState", state)
     bind("tape", tapeCopy)
+    update("program", parsed)
     for (;;) {
         if (state.curStep > maxSteps) {
             state.status = "halted"
@@ -157,7 +158,8 @@ export const turingMachine = async (program: Readonly<string>, startTape: Readon
 
 export type TuringMachineState = {
     tape: Tape,
-    machineState: InnerState
+    machineState: InnerState,
+    program: Program
 }
 
 export type TuringMachineEvent = {

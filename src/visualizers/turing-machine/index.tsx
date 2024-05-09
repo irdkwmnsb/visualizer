@@ -13,10 +13,10 @@ export const manifest: TuringMachineManifest = {
     nameEn: "Turing machine",
     authorEn: "Alzhanov Maksim",
     authorRu: "Альжанов Максим",
-    descriptionRu: "Машина Тьюринга с одной бесконечной лентой и бесконечным количеством состояний",
+    descriptionRu: "Машина Тьюринга с одной бесконечной лентой и бесконечным числом состояний",
     descriptionEn: "Turing machine with a single infinite tape and infinite number of states"
 }
 
 
-export const { bind, here, store } = initAlgo<TuringMachineState, TuringMachineEvent, TuringMachineArguments, TuringMachineManifest>(manifest)
+export const { bind, here, update, store } = initAlgo<TuringMachineState, TuringMachineEvent, TuringMachineArguments, TuringMachineManifest>(manifest)
 

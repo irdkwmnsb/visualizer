@@ -98,7 +98,7 @@ export class RuntimeStore<
 
     updateSnapshot = () => {
         this._dataSnapshot = {
-            curState: this.curState,
+            curState: _.cloneDeep(this.curState),
             curEvent: this.error === undefined ? this.curEvent : {name: "error", error: this.error, state: null},
             currentStep: this.curStep,
             events: this.events,

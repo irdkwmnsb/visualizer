@@ -78,7 +78,6 @@ export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArgument
         }
     }, [])
     return <div className={styles.startContainer}>
-        {centerCell}
         <div className={styles.tapeContainer}>
             {els}
         </div>
@@ -95,7 +94,7 @@ s _ -> ac _ ^
 s 0 -> n _ >
 n 0 -> s _ >
 n _ -> rj _ >"/>
-        <button onClick={onStart}>Start</button>
+        <button onClick={onStart(false)}>Start</button>
         <button onClick={onStart(true)}>Full run</button>
     </div>
 }
