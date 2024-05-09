@@ -67,18 +67,23 @@ html, body {
             margin-bottom: 20px;
         }
         .events {
+            flex-grow: 1;
             overflow-y: auto;
-            display: grid;
-            .event {
-                cursor: pointer;
-                box-sizing: border-box;
-                border-top: 1px #c3c3c3 solid;
-                &:last-child {
-                    border-bottom: 1px #c3c3c3 solid;
-                }
-                &.selected {
-                    background-color: #eee;
+            display: flex;
+            flex-direction: column;
+            .eventsContainer{
+                flex-grow: 1;
+                .event {
+                    cursor: pointer;
+                    box-sizing: border-box;
                     border-top: 1px #c3c3c3 solid;
+                    &:last-child {
+                        border-bottom: 1px #c3c3c3 solid;
+                    }
+                    &.selected {
+                        background-color: #eee;
+                        border-top: 1px #c3c3c3 solid;
+                    }
                 }
             }
         }

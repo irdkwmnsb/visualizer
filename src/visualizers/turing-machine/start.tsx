@@ -61,9 +61,9 @@ export const TuringMachineStart = ({ doStart }: StartProps<TuringMachineArgument
             </div>
         )
     }
-    const onStart = useCallback(() => {
+    const onStart = useCallback((full: boolean) => () => {
         if (editorRef.current !== null) {
-            doStart([editorRef.current.getValue(), tape, 10_000], false)
+            doStart([editorRef.current.getValue(), tape, 10_000], full)
         }
     }, [tape])
     useEffect(() => { // https://github.com/Microsoft/monaco-editor/issues/28
@@ -96,5 +96,6 @@ s 0 -> n _ >
 n 0 -> s _ >
 n _ -> rj _ >"/>
         <button onClick={onStart}>Start</button>
+        <button onClick={onStart(true)}>Full run</button>
     </div>
 }

@@ -35,6 +35,9 @@ dependencies:
   use-immer:
     specifier: ^0.9.0
     version: 0.9.0(immer@10.0.3)(react@18.2.0)
+  virtua:
+    specifier: ^0.30.5
+    version: 0.30.5(react-dom@18.2.0)(react@18.2.0)
 
 devDependencies:
   '@types/lodash':
@@ -3335,6 +3338,27 @@ packages:
     dependencies:
       immer: 10.0.3
       react: 18.2.0
+    dev: false
+
+  /virtua@0.30.5(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-rLx19CVwHHf+ombzwUPNVoRVUEd8nJNCzFi000X7ALy/J9hLvftoltiqBSJ/9DxQwv6tZ4B+NZoPDee10mpT+A==}
+    peerDependencies:
+      react: '>=16.14.0'
+      react-dom: '>=16.14.0'
+      solid-js: '>=1.0'
+      vue: '>=3.2'
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      solid-js:
+        optional: true
+      vue:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /vite-plugin-inspect@0.8.1(rollup@4.9.2)(vite@5.0.10):

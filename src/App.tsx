@@ -1,11 +1,12 @@
 /* @refresh reload */
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { RuntimeStore } from "./core/store"
 import { IAlgorithmManifest } from "./core/manifest"
 import { useVisualizer } from "./core/react"
 import "@fontsource-variable/arimo"
 import styles from "./App.module.scss"
 import classNames from "classnames"
+import { VList, VListHandle } from "virtua"
 
 type AppProps = {
     manifest: IAlgorithmManifest,
@@ -20,7 +21,6 @@ const App = ({ manifest, store }: AppProps) => {
     const vis = useVisualizer(store)
     const {curState, curEvent, events, currentStep, start, next} = vis
     const [eventOverride, setEventOverride] = useState<number | undefined>(undefined)
-    const [skipCounter, setSkipCounter] = useState<number>(undefined)
     const curEventOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride] : curEvent
     const curStateOverride = eventOverride !== undefined && events !== undefined ? events[eventOverride].state : curState
     const isRunning = curEventOverride !== undefined && curStateOverride !== undefined
@@ -46,11 +46,17 @@ const App = ({ manifest, store }: AppProps) => {
             setEventOverride(eventOverride - 1)
         }
     }
+    const eventsHandle = useRef<VListHandle>(null)
     const doStart: typeof start = (...args) => {
         setCurTab(Tab.Render)
         setEventOverride(undefined)
         start(...args)
     }
+    useEffect(() => {
+        if(eventsHandle.current !== null) {
+            eventsHandle.current.scrollToIndex(eventOverride ?? currentStep ?? 0, {align: "nearest"})
+        }
+    }, [eventOverride, currentStep])
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === "ArrowRight") {
@@ -108,16 +114,21 @@ const App = ({ manifest, store }: AppProps) => {
             </section>
             <section className={styles.events}>
                 Events:
-                <div>
-                    {events ? events.map((x, i) => {
-                        const isSelected = i === eventOverride || (eventOverride === undefined && i === currentStep! - 1)
-                        return <div key={i} className={classNames(styles.event, {
-                            [styles.selected]: isSelected
-                        })} onClick={() => setEventOverride(i)}>
-                            <button onClick={() => setEventOverride(i)} disabled={isSelected}>&rarr;</button>
-                            {i + 1} {x.name}
-                        </div>
-                    }) : "Nothing yet.."}
+                <div className={styles.eventsContainer}>
+                    {events ? 
+                        <VList ref={eventsHandle}>
+                            {events.map((event, index) => {
+                                const isSelected = index === eventOverride || (eventOverride === undefined && index === currentStep! - 1)
+                                return <div key={index} className={classNames(styles.event, {
+                                    [styles.selected]: isSelected
+                                })} onClick={() => setEventOverride(index)}>
+                                    <button onClick={() => setEventOverride(index)} disabled={isSelected}>&rarr;</button>
+                                    {index + 1} {event.name}
+                                </div>
+                            })}
+                        </VList>
+                        : "Nothing yet.."
+                    }
                 </div>
             </section>
         </div>
