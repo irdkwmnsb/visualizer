@@ -5,15 +5,30 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@colormap/core':
+    specifier: ^0.2.0
+    version: 0.2.0
+  '@colormap/presets':
+    specifier: ^0.2.0
+    version: 0.2.0
   '@fontsource-variable/arimo':
     specifier: ^5.0.21
     version: 5.0.21
   '@fontsource-variable/raleway':
     specifier: ^5.0.19
     version: 5.0.19
+  '@fontsource/arimo':
+    specifier: ^5.0.20
+    version: 5.0.20
   '@monaco-editor/react':
     specifier: ^4.6.0
     version: 4.6.0(monaco-editor@0.46.0)(react-dom@18.2.0)(react@18.2.0)
+  chart.js:
+    specifier: ^4.4.2
+    version: 4.4.2
+  chartjs-plugin-annotation:
+    specifier: ^3.0.1
+    version: 3.0.1(chart.js@4.4.2)
   classnames:
     specifier: ^2.5.1
     version: 2.5.1
@@ -35,6 +50,9 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
+  seedrandom:
+    specifier: ^3.0.5
+    version: 3.0.5
   use-immer:
     specifier: ^0.9.0
     version: 0.9.0(immer@10.0.3)(react@18.2.0)
@@ -58,6 +76,9 @@ devDependencies:
   '@types/react-dom':
     specifier: ^18.2.18
     version: 18.2.18
+  '@types/seedrandom':
+    specifier: ^3.0.8
+    version: 3.0.8
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.17.0
     version: 6.17.0(@typescript-eslint/parser@6.17.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -340,6 +361,14 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
+  /@colormap/core@0.2.0:
+    resolution: {integrity: sha512-mFR7RHtSSDHwJq4pcXVa+MAzdRqADm5RiUkG35BfmUr9TZri/+NPfwJtDSvajzLwkOwBU0aGiSpNYX6qlOSwng==}
+    dev: false
+
+  /@colormap/presets@0.2.0:
+    resolution: {integrity: sha512-hzUG6oS+dJxd26k6i4pxFDWP4InWhFRcptuv4U6Mq6/Vs7TT1aPZf1rWSfCv/FgJ11k/gKsUtkFdzVGHckBLxQ==}
+    dev: false
+
   /@esbuild/aix-ppc64@0.19.11:
     resolution: {integrity: sha512-FnzU0LyE3ySQk7UntJO4+qIiQgI7KoODnZg5xzXIrFJlKd2P2gwHsHY4927xj9y5PJmJSzULiUCWmv7iWnNa7g==}
     engines: {node: '>=12'}
@@ -592,6 +621,10 @@ packages:
     resolution: {integrity: sha512-HR6JDmRqrjjkZnk0HhVR0vHCkDUuQdEwTaRz1nToWvej0gpC0riEdi7zmaQjaH12O7PBsO+bewqQFSUrA7tDhA==}
     dev: false
 
+  /@fontsource/arimo@5.0.20:
+    resolution: {integrity: sha512-geAF8RcRPapuYGLSg8dTt36XpqSof+q4J4EKk0hOqH/6H8zVXIlvFJrpoNSVxYOdJUq6Ho8ItnDw6NhQ+tY2DA==}
+    dev: false
+
   /@humanwhocodes/config-array@0.11.13:
     resolution: {integrity: sha512-JSBDMiDKSzQVngfRjOdFXgFfklaXI4K9nLF49Auh21lmBWRLIK3+xTErTWD4KU54pb6coM6ESE7Awz/FNU3zgQ==}
     engines: {node: '>=10.10.0'}
@@ -641,6 +674,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
+
+  /@kurkle/color@0.3.2:
+    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+    dev: false
 
   /@monaco-editor/loader@1.4.0(monaco-editor@0.46.0):
     resolution: {integrity: sha512-00ioBig0x642hytVspPl7DbQyaSWRaolYie/UFNjoTdvoKPzo6xrXLhTk9ixgIKcLH5b5vDOjVNiGyY+uDCUlg==}
@@ -1005,6 +1042,10 @@ packages:
 
   /@types/scheduler@0.16.8:
     resolution: {integrity: sha512-WZLiwShhwLRmeV6zH+GkbOFT6Z6VklCItrDioxUnv+u4Ll+8vKeFySoFyK/0ctcRpOmwAicELfmys1sDc/Rw+A==}
+    dev: true
+
+  /@types/seedrandom@3.0.8:
+    resolution: {integrity: sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==}
     dev: true
 
   /@types/semver@7.5.6:
@@ -1391,6 +1432,21 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
     dev: true
+
+  /chart.js@4.4.2:
+    resolution: {integrity: sha512-6GD7iKwFpP5kbSD4MeRRRlTnQvxfQREy36uEtm1hzHzcOqwWx0YEHuspuoNlslu+nciLIB7fjjsHkUv/FzFcOg==}
+    engines: {pnpm: '>=8'}
+    dependencies:
+      '@kurkle/color': 0.3.2
+    dev: false
+
+  /chartjs-plugin-annotation@3.0.1(chart.js@4.4.2):
+    resolution: {integrity: sha512-hlIrXXKqSDgb+ZjVYHefmlZUXK8KbkCPiynSVrTb/HjTMkT62cOInaT1NTQCKtxKKOm9oHp958DY3RTAFKtkHg==}
+    peerDependencies:
+      chart.js: '>=4.0.0'
+    dependencies:
+      chart.js: 4.4.2
+    dev: false
 
   /chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -3009,6 +3065,10 @@ packages:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
+    dev: false
+
+  /seedrandom@3.0.5:
+    resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
     dev: false
 
   /semver@6.3.1:

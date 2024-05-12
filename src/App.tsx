@@ -93,7 +93,16 @@ const App = ({ manifest, store }: AppProps) => {
             <div className={classNames(styles.tab, styles.tabRender, {
                 [styles.enabled]: curTab === Tab.Render
             })}>
-                {curStateOverride && curEventOverride && <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>}
+                {curStateOverride && curEventOverride && 
+                    ("customErrorHandling" in manifest && manifest.customErrorHandling === true ? 
+                        <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/> :
+                        curEventOverride.name === "error" ? 
+                            <pre>
+                                {curEventOverride.error.stack}
+                            </pre>:
+                            <manifest.renderComponent curState={curStateOverride} curEvent={curEventOverride}/>
+                    )
+                }
             </div>
         </section>
         <div className={styles.sidebar}>

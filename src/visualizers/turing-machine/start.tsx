@@ -5,7 +5,7 @@ import { TuringMachineArguments } from "./turing-machine"
 import { useImmer } from "use-immer"
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js"
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker"
-import { Editor, loader } from "@monaco-editor/react" // TODO: https://www.npmjs.com/package/vite-plugin-monaco-editor
+import { Editor, loader } from "@monaco-editor/react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const VIEWPORT = [-10, 10]

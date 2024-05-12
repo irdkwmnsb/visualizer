@@ -28,6 +28,7 @@ export type IAlgorithmManifest<
   algo: (...args: Arguments) => Promise<void>; // fixme: Return type should not be Promise<void>
   startComponent: FC<StartProps<Arguments>>;
   renderComponent: FC<SafeRenderProps<State, Event>>;
+  customErrorHandling: true;
   nameRu: string; // TODO: Think about i18n a bit more.
   nameEn: string;
   authorRu: string;
@@ -38,7 +39,6 @@ export type IAlgorithmManifest<
   algo: (...args: Arguments) => Promise<void>; // fixme: Return type should not be Promise<void>
   startComponent: FC<StartProps<Arguments>>;
   renderComponent: FC<RenderProps<State, Event>>;
-  handleErrorsForMe: true; // TODO: naming is weird but whatever
   nameRu: string; // TODO: Think about i18n a bit more.
   nameEn: string;
   authorRu: string;

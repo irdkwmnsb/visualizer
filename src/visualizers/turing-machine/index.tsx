@@ -9,6 +9,7 @@ export const manifest: TuringMachineManifest = {
     algo: turingMachine,
     startComponent: TuringMachineStart,
     renderComponent: TuringMachineRender,
+    customErrorHandling: true,
     nameRu: "Машина Тьюринга",
     nameEn: "Turing machine",
     authorEn: "Alzhanov Maksim",

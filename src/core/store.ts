@@ -130,6 +130,7 @@ export class RuntimeStore<
             this.notifyReact()
         }).catch((e) => {
             this.error = e
+            console.error(e)
             this.notifyReact()
         })
     }
