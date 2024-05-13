@@ -61,7 +61,7 @@ export const visualizerCodegen = async (): Promise<Plugin> => {
                 if (req.url === undefined) {
                     next()
                 } else if (req.url === "/") {
-                    const visName = req.url.replace("/", "").replace(".html", "")
+                    const _ = req.url.replace("/", "").replace(".html", "")
                     const body = await server.transformIndexHtml(req.url, await getIndexHTMLTemplate({ manifests: JSON.stringify(visualizers) }))
                     sendBody(body)
                 } else if(isVisEntry(req.url)) {

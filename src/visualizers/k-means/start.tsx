@@ -9,7 +9,7 @@ export const BubbleSortStarter = ({ doStart }: StartProps<KMeansArguments>) => {
     const [randState, setRandState] = useState("42")
     
     const start = useCallback((fullRun: boolean) => {
-        const [X, y] = makeBlobs(500, k, undefined, undefined, randState)
+        const [X, _] = makeBlobs(500, k, undefined, undefined, randState)
         doStart([k, X], fullRun)
     }, [k])
 

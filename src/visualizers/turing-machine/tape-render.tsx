@@ -2,7 +2,6 @@ import _ from "lodash"
 import { usePrevious } from "../../utils"
 import { Tape } from "./tape"
 import styles from "./tape-render.module.scss"
-import { memo } from "react"
 import classNames from "classnames"
 
 const VIEWPORT = 10
