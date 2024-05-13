@@ -1,6 +1,5 @@
 import _ from "lodash"
 import { bind, here, update } from "."
-import cluster from "cluster"
 
 type Point = [number, number]
 
@@ -13,11 +12,8 @@ export const kMeans = async (k: number, points: Point[]) => {
     const distance = (a: Point, b: Point) => Math.sqrt(Math.pow((b[0] - a[0]), 2) + Math.pow((b[1] - a[1]), 2))
 
     let converged = false
-    while (true) {
-        const clusters: number[] = points.map((point) => {
-            const closestCenter: number = _.minBy(_.range(0, centers.length), (centerIndex: number) => distance(centers[centerIndex], point))!
-            return closestCenter
-        })
+    for (;;) {
+        const clusters: number[] = points.map((point) => _.minBy(_.range(0, centers.length), (centerIndex: number) => distance(centers[centerIndex], point))!)
         await here("assign", clusters)
         if (converged) {
             break

@@ -7,6 +7,7 @@ import _ from "lodash"
 import { createColorMap, linearScale } from "@colormap/core"
 import { viridis } from "@colormap/presets"
 import { Point } from "../../data/points"
+import { VisNDArray } from "../../components/array/ndarray"
 
 
 Chart.register(Colors)
@@ -88,5 +89,6 @@ export const BubbleSortRender = ({ curState, curEvent }: RenderProps<KMeansState
     }, [curState, curEvent])
     return <div>
         <canvas ref={divref} width="500" height="500"></canvas>
+        <VisNDArray array={curState.centers} label="Centers"/>
     </div>
 }

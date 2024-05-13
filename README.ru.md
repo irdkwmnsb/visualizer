@@ -50,3 +50,34 @@ TODO
 
 На момент написания документации проект умеет запускать только алгоритм сортировки пузырьком.
 Чтобы поменять запускаемый алгоритм необходимо изменить файл [./src/lib/index.tsx](./src/lib/index.tsx) и [./src/App.tsx](./src/App.tsx) в местах где явно используется bubble sort.
+
+
+```plantuml
+@startuml
+actor Пользователь  as user
+participant Браузер as browser
+participant Фреймворк as framework
+participant Алгоритм as algorithm
+participant Визуализатор as visualizer
+autonumber 1
+user -> browser : Нажатие на "Start"
+browser -> framework : Обработка события
+framework -> algorithm : Запуск алгоритма
+algorithm -> framework : Объекты состояния
+algorithm -> framework : await here
+framework -> visualizer : Состояние алгоритма
+visualizer -> browser : Состояние интерфейса
+
+user -> browser : Нажатие на "Next"
+browser -> framework : Обработка события
+framework -> algorithm : Promise.resolve
+algorithm -> framework : await here
+framework -> visualizer : Состояние алгоритма
+visualizer -> browser : Состояние интерфейса
+
+user -> browser : Нажатие на "Prev"
+browser -> framework : Обработка события
+framework -> visualizer : Предыдущее состояние алгоритма
+visualizer -> browser : Состояние интерфейса
+@enduml
+```

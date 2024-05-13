@@ -1,0 +1,22 @@
+.table {
+    border-left: 1px solid black;
+    border-collapse: collapse;
+    thead {
+        color: #777;
+        tr {
+            td {
+                border: 1px solid black;
+            }
+        }
+    }
+    tbody {
+        tr {
+            td {
+                border: 1px solid black;
+                &:first-child {
+                    color: #777;
+                }
+            }
+        }
+    }
+}
