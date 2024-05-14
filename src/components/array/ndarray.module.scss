@@ -5,6 +5,7 @@
         color: #777;
         tr {
             td {
+                text-align: center;
                 border: 1px solid black;
             }
         }
@@ -18,5 +19,20 @@
                 }
             }
         }
+    }
+}
+
+.numberCell {
+    width: 100%;
+    display: flex;
+    .whole {
+        flex-grow: 1;
+        text-align: end;
+    }
+    .dot {
+
+    }
+    .rational {
+        
     }
 }

@@ -10,6 +10,18 @@ type VisNDArrayProps<T> = {
     } 
     : unknown)
 
+const NumberCell = ({value, roundTo} : {value: number, roundTo: number}) => {
+    const whole = Math.floor(value)
+    const rational = Math.round((Math.abs(value) % 1) * Math.pow(10, roundTo))
+    return <div className={styles.numberCell}>
+        <div className={styles.whole}>{(whole + "").replace("-", "−")}</div>
+        <div className={styles.dot}>.</div>
+        <div className={styles.rational} style={{
+            width: roundTo + "ch"
+        }}>{rational}</div>
+    </div>
+}
+
 export const VisNDArray = <T extends RenderableData,>(props: VisNDArrayProps<T>) => {
     const maxElems = props.array.reduce((a, b) => Math.max(a, b.length), 0)
     return <div>
@@ -34,7 +46,10 @@ export const VisNDArray = <T extends RenderableData,>(props: VisNDArrayProps<T>)
                         {row.map((el, colIndex) => (
                             <td key={rowIndex + "-" + colIndex}>
                                 {
-                                    typeof el === "number" ? el.toFixed((props as VisNDArrayProps<typeof el>).roundTo ?? 2) : el
+                                    typeof el === "number" ? 
+                                        <NumberCell value={el} roundTo={(props as VisNDArrayProps<typeof el>).roundTo ?? 2}/>
+                                        : 
+                                        el
                                 }
                             </td>
                         ))}
