@@ -131,7 +131,7 @@ export const turingMachine = async (program: Readonly<string>, startTape: Readon
         for(const rule of parsed.rules) {
             if (state.state === rule.curState && tapeCopy.get(state.curPosition) === rule.curTape) {
                 if (matchingRule !== null) {
-                    throw new Error("Two rules match this state.")
+                    throw new Error(`Two rules match state ${state.state} by symbol ${rule.curTape}: ${matchingRule} and ${rule}.`)
                 }
                 matchingRule = rule
             }

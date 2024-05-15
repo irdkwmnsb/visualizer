@@ -11,12 +11,10 @@ export const TuringMachineRender = ({ curState, curEvent }: SafeRenderProps<Turi
     const program = curState.program
     const cy = useRef<cytoscape.Core | null>(null)
     const graphRef = useRef<HTMLDivElement>(null)
-    if (curEvent.name === "error") {
-        return <div>
-            Error while running: {curEvent.error + ""}
-        </div>
-    }
     useEffect(() => {
+        if (graphRef.current === null) {
+            return
+        }
         cy.current = cytoscape({
             container: graphRef.current,
             elements: [],
@@ -125,6 +123,11 @@ export const TuringMachineRender = ({ curState, curEvent }: SafeRenderProps<Turi
             console.log(cy.current?.elements())
         }
     }, [JSON.stringify(program)])
+    if (curEvent.name === "error") {
+        return <div>
+            Error while running: {curEvent.error + ""}
+        </div>
+    }
     return <div>
         {curState.machineState.description}
         <br/>
