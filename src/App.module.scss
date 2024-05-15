@@ -80,6 +80,9 @@ html, body {
                     cursor: pointer;
                     box-sizing: border-box;
                     border-top: 1px #c3c3c3 solid;
+                    button {
+                        margin-right: 5px;
+                    }
                     &:last-child {
                         border-bottom: 1px #c3c3c3 solid;
                     }

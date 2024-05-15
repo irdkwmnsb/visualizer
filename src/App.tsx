@@ -77,8 +77,8 @@ const App = ({ manifest, store }: AppProps) => {
     return <div className={styles.app}>
         <div className={styles.header}>
             <a onClick={(_) => history.back()}>&larr; Go back</a>
-            <h1>{manifest.nameRu}</h1>
-            <article>{manifest.descriptionRu}</article>
+            <h1>{manifest.nameEn}</h1>
+            <article>{manifest.descriptionEn}</article>
             <section className={styles.tabSwitcher}>
                 <button onClick={() => setCurTab(Tab.Starter)}>Starter</button>
                 <button onClick={() => setCurTab(Tab.Render)} disabled={!isRunning}>Render</button>

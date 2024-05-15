@@ -13,7 +13,12 @@ export const BubbleSortStarter = ({ doStart }: StartProps<KMeansArguments>) => {
         doStart([k, X], fullRun)
     }, [k])
 
-    return <div>
+    return <div style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "3px",
+        padding: "5px"
+    }}>
         <label>
             Cluster K:
             <input type="number" name="k" value={k} onChange={(ev) => setK(parseInt(ev.target.value))}/>
