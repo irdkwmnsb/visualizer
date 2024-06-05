@@ -15,7 +15,7 @@ Chart.register(annotationPlugin)
 
 
 
-export const BubbleSortRender = ({ curState, curEvent }: RenderProps<KMeansState, KMeansEvent>) => {
+export const KMeansRender = ({ curState, curEvent }: RenderProps<KMeansState, KMeansEvent>) => {
     const divref = useRef<HTMLCanvasElement>(null)
     const chartRef = useRef<Chart | null>(null)
     useEffect(() => {
@@ -87,8 +87,10 @@ export const BubbleSortRender = ({ curState, curEvent }: RenderProps<KMeansState
         centers.data = curState.centers
         chartRef.current.update()
     }, [curState, curEvent])
-    return <div>
-        <canvas ref={divref} width="500" height="500"></canvas>
+    return <div style={{display: "flex", flexDirection: "row", width: "100%", height: "100%"}}>
+        <div>
+            <canvas ref={divref} width="500" height="500"></canvas>
+        </div>
         <VisNDArray array={curState.centers} label="Centers"/>
     </div>
 }

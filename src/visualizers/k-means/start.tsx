@@ -4,7 +4,7 @@ import { KMeansArguments } from "./k-means"
 import _ from "lodash"
 import { makeBlobs } from "../../data/points"
 
-export const BubbleSortStarter = ({ doStart }: StartProps<KMeansArguments>) => {
+export const KMeansStarter = ({ doStart }: StartProps<KMeansArguments>) => {
     const [k, setK] = useState(3)
     const [randState, setRandState] = useState("42")
     

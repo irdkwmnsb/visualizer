@@ -1,7 +1,7 @@
 import { IAlgorithmManifest, initAlgo } from "../../core/manifest"
 import { KMeansArguments, KMeansEvent, KMeansState, kMeans } from "./k-means"
-import { BubbleSortRender } from "./render"
-import { BubbleSortStarter } from "./start"
+import { KMeansRender } from "./render"
+import { KMeansStarter } from "./start"
 
 type KMeansManifest = IAlgorithmManifest<
     KMeansState, 
@@ -11,8 +11,8 @@ type KMeansManifest = IAlgorithmManifest<
 
 export const manifest: KMeansManifest = {
     algo: kMeans,
-    startComponent: BubbleSortStarter,
-    renderComponent: BubbleSortRender,
+    startComponent: KMeansStarter,
+    renderComponent: KMeansRender,
     nameEn: "K-Means clustering",
     descriptionEn: "Clustering algorithm https://en.wikipedia.org/wiki/K-means_clustering",
     authorEn: "Alzhanov Maxim",
