@@ -64,13 +64,14 @@ export class RuntimeStore<
         this.curState[name] = newValue
     }
 
+    // TODO: use Immer if this becomes too heavy.
+    // Immer allows to watch for modifications of deep nested objects.
+
     here = async (name: Event["name"], ...args: Event["args"]): Promise<void> => {
         this.curStep++
         this.curEvent = {
             name,
             args,
-            // TODO: use Immer if this becomes too heavy.
-            // Immer allows to watch for modifications of deep nested objects.
             state: this.storeStates ? _.cloneDeep(this.curState) as State : null,
         } as StoredEvent<Event, State>
         if (this.storeEvents) {
