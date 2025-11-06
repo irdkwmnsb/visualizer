@@ -106,9 +106,6 @@ export const ViterbiRender = ({ curState, curEvent }: RenderProps<ViterbiState, 
         const ctx = canvas.getContext("2d")
         if (!ctx) return
         
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        
         // Get codeGrid from state or from event data during construction
         let codeGrid = curState.codeGrid
         if (!codeGrid && curEvent.name.startsWith("make_grid_")) {
@@ -121,11 +118,29 @@ export const ViterbiRender = ({ curState, curEvent }: RenderProps<ViterbiState, 
         }
         
         // Only draw trellis if we have a codeGrid
-        if (codeGrid) {
+        if (codeGrid && codeGrid.length > 0) {
             const layerWidth = 150
             const nodeHeight = 40
-            const startX = 50
-            const startY = 50
+            const padding = 50
+            const labelHeight = 30
+            
+            // Calculate required canvas size
+            const numLayers = codeGrid.length
+            const maxNodes = Math.max(...codeGrid.map(layer => layer.nodes.length), 1)
+            
+            // Calculate canvas dimensions
+            const requiredWidth = numLayers * layerWidth + padding * 2
+            const requiredHeight = maxNodes * nodeHeight + padding * 2 + labelHeight
+            
+            // Set canvas size (with minimums)
+            canvas.width = Math.max(800, requiredWidth)
+            canvas.height = Math.max(400, requiredHeight)
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            
+            const startX = padding
+            const startY = padding + labelHeight
             
             // Calculate positions for all nodes
             const nodePositions: Point[][] = []
@@ -133,7 +148,7 @@ export const ViterbiRender = ({ curState, curEvent }: RenderProps<ViterbiState, 
                 const nodes = codeGrid[layer].nodes
                 const positions: Point[] = []
                 const totalHeight = nodes.length * nodeHeight
-                const offsetY = (canvas.height - totalHeight) / 2
+                const offsetY = startY + (maxNodes * nodeHeight - totalHeight) / 2
                 
                 for (let node = 0; node < nodes.length; node++) {
                     positions.push({
@@ -520,8 +535,13 @@ export const ViterbiRender = ({ curState, curEvent }: RenderProps<ViterbiState, 
                 
                 ctx.fillStyle = labelColor
                 ctx.font = `${labelWeight} 12px Arial`
-                ctx.fillText(`L${layer}`, x, startY - 20)
+                ctx.fillText(`L${layer}`, x, startY - 10)
             }
+        } else {
+            // Clear canvas if no grid
+            canvas.width = 800
+            canvas.height = 400
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
         }
     }, [curState, curEvent])
     
@@ -685,7 +705,7 @@ export const ViterbiRender = ({ curState, curEvent }: RenderProps<ViterbiState, 
         )}
         
         {/* Trellis Diagram - Always show when available */}
-        {curState.codeGrid && (
+        {(curState.codeGrid || curEvent.name.startsWith("make_grid_")) && (
             <div>
                 <h3>Trellis Diagram</h3>
                 {curEvent.name.startsWith("make_grid_") && (
@@ -698,12 +718,12 @@ export const ViterbiRender = ({ curState, curEvent }: RenderProps<ViterbiState, 
                         )}
                     </div>
                 )}
-                <canvas 
-                    ref={canvasRef} 
-                    width={800} 
-                    height={400}
-                    style={{ border: "1px solid #ccc", backgroundColor: "#f9f9f9" }}
-                />
+                <div style={{ overflow: "auto", maxWidth: "100%" }}>
+                    <canvas 
+                        ref={canvasRef} 
+                        style={{ border: "1px solid #ccc", backgroundColor: "#f9f9f9", display: "block" }}
+                    />
+                </div>
                 <div style={{ marginTop: "10px", fontSize: "12px" }}>
                     <span style={{ color: "#00aaff" }}>Blue edges: 0</span> | 
                     <span style={{ color: "#ff6600" }}> Orange edges: 1</span>
